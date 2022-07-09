@@ -20,6 +20,7 @@
         <property name="current_session_context_class">thread</property>
 
         <mapping class="com.fayardev.membershipsystem.model.User"/>
+        <mapping class="com.fayardev.membershipsystem.model.Profile"/>
 
     </session-factory>
 

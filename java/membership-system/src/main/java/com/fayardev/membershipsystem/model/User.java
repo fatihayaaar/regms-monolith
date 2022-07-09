@@ -23,6 +23,7 @@ public final class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     private int ID;
 
     @Column(name = "username", nullable = false, length = USERNAME_MAX_LENGTH, unique = true)
