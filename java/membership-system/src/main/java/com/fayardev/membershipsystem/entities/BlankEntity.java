@@ -1,4 +1,4 @@
-package com.fayardev.membershipsystem.model;
+package com.fayardev.membershipsystem.entities;
 
 public final class BlankEntity extends BaseEntity {
 

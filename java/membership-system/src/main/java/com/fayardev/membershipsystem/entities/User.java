@@ -1,4 +1,4 @@
-package com.fayardev.membershipsystem.model;
+package com.fayardev.membershipsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

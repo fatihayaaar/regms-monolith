@@ -1,4 +1,4 @@
-package com.fayardev.membershipsystem.model;
+package com.fayardev.membershipsystem.entities;
 
 import java.io.Serializable;
 
