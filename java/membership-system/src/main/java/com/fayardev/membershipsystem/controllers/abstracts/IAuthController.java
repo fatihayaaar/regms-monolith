@@ -1,5 +1,6 @@
 package com.fayardev.membershipsystem.controllers.abstracts;
 
+import com.fayardev.membershipsystem.dtos.UserDto;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 public interface IAuthController {
     @PostMapping("/sign-up")
-    boolean signUp(@RequestBody Map<String, Object> map) throws Exception;
+    boolean signUp(@RequestBody UserDto userDto) throws Exception;
 
     @PostMapping("/check-valid-password")
     boolean checkIfValidOldPassword(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws JSONException;

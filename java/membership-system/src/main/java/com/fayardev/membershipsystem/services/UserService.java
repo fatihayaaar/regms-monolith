@@ -2,12 +2,16 @@ package com.fayardev.membershipsystem.services;
 
 import com.fayardev.membershipsystem.entities.BaseEntity;
 import com.fayardev.membershipsystem.entities.User;
+import com.fayardev.membershipsystem.exceptions.UserException;
+import com.fayardev.membershipsystem.exceptions.enums.ErrorComponents;
 import com.fayardev.membershipsystem.repositories.UserRepository;
 import com.fayardev.membershipsystem.services.abstracts.IUserService;
+import com.fayardev.membershipsystem.validates.UserValidate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,7 +27,46 @@ public class UserService extends BaseService<User> implements IUserService<User>
     @Override
     @Transactional
     public boolean add(User entity) throws Exception {
+        if (!this.userValidate(entity)) {
+            return false;
+        }
+        if (!emailControl(entity) || !usernameControl(entity)) {
+            return false;
+        }
+        entity.setUsername(entity.getUsername().trim().toLowerCase());
+        entity.setCreateDate(new Date());
+        entity.setActive(true);
         return repository.add(entity);
+    }
+
+    private boolean userValidate(User user) throws UserException {
+        if (UserValidate.emailLengthValidate(user.getEmailAddress())) {
+            if (UserValidate.strUsernameLengthValidate(user.getUsername())) {
+                if (UserValidate.usernameRegexValidate(user.getUsername())) {
+                    if (UserValidate.emailRegexValidate(user.getEmailAddress())) {
+                        return UserValidate.genderValidate(user.getSex());
+                    } else return false;
+                } else return false;
+            } else return false;
+        } else return false;
+    }
+
+    private boolean emailControl(User user) throws UserException {
+        BaseEntity userLocal = repository.getEntityByEmail(user.getEmailAddress());
+        if (userLocal.getID() != -1) {
+            return UserValidate.emailEquals(user.getEmailAddress(),
+                    ((User) userLocal).getEmailAddress(), ErrorComponents.EMAIL);
+        }
+        return true;
+    }
+
+    private boolean usernameControl(User user) throws UserException {
+        BaseEntity userLocal = repository.getEntityByUsername(user.getUsername());
+        if (userLocal.getID() != -1) {
+            return UserValidate.usernameEquals(user.getUsername(),
+                    ((User) userLocal).getUsername(), ErrorComponents.USERNAME);
+        }
+        return true;
     }
 
     @Override

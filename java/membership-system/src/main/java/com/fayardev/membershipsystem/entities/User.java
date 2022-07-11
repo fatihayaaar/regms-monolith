@@ -10,6 +10,11 @@ import java.util.Date;
 
 @Entity
 @Table(name = "user")
+@NamedQueries({
+        @NamedQuery(name = "User.findByPhoneNo", query = "SELECT u FROM User u WHERE u.phoneNo=:phoneNo"),
+        @NamedQuery(name = "User.findByEmailAddress", query = "SELECT u FROM User u WHERE u.emailAddress=:email"),
+        @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username=:username"),
+})
 @JsonIgnoreProperties(allowSetters = true, value = {"hashpassword"})
 public final class User extends BaseEntity {
 
