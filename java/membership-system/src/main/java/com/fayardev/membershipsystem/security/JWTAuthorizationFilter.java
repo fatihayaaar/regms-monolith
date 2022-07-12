@@ -1,4 +1,4 @@
-package com.fayardev.membershipsystem.jwt;
+package com.fayardev.membershipsystem.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.fayardev.membershipsystem.jwt.SecurityConstants.*;
+import static com.fayardev.membershipsystem.security.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

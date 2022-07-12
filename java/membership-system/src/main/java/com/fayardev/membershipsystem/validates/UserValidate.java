@@ -16,8 +16,9 @@ public class UserValidate {
     public static boolean strUsernameLengthValidate(String username) throws UserException {
         if (!username.trim().isEmpty()) {
             username = username.trim().toLowerCase();
-            if (!username.trim().isEmpty() && username.trim().length() <= User.USERNAME_MAX_LENGTH) return true;
-            else throw new UserException("32 karakterden uzun", Errors.MAX_VALUE_LENGTH, ErrorComponents.USERNAME);
+            if (!username.trim().isEmpty() && username.trim().length() <= User.USERNAME_MAX_LENGTH) {
+                return true;
+            } else throw new UserException("32 karakterden uzun", Errors.MAX_VALUE_LENGTH, ErrorComponents.USERNAME);
         } else
             throw new UserException("username cannot be blank", Errors.NOT_NULL_ERROR, ErrorComponents.USERNAME);
     }
@@ -35,27 +36,29 @@ public class UserValidate {
     public static boolean passwordValidate(String pass) throws UserException {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher matcher = pattern.matcher(pass);
-        if (matcher.matches()) return true;
-        else throw new UserException("password is unusable", Errors.REGEX, ErrorComponents.PASSWORD);
+        if (matcher.matches()) {
+            return true;
+        } else throw new UserException("password is unusable", Errors.REGEX, ErrorComponents.PASSWORD);
     }
 
     public static boolean emailLengthValidate(String email) throws UserException {
-        if (email.trim().length() <= User.EMAIL_ADDRESS_MAX_LENGTH && email.trim().length() > 0) return true;
-        else
+        if (email.trim().length() <= User.EMAIL_ADDRESS_MAX_LENGTH && email.trim().length() > 0) {
+            return true;
+        } else
             throw new UserException("character length exceeded the limit", Errors.MAX_VALUE_LENGTH, ErrorComponents.EMAIL);
     }
 
     public static boolean emailRegexValidate(String email) throws UserException {
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
-        if (matcher.matches()) return true;
-        else throw new UserException("email is unusable", Errors.REGEX, ErrorComponents.EMAIL);
+        if (matcher.matches()) {
+            return true;
+        } else throw new UserException("email is unusable", Errors.REGEX, ErrorComponents.EMAIL);
     }
 
     public static boolean genderValidate(String gender) throws UserException {
         if (gender.trim().equalsIgnoreCase("male")
-                || gender.trim().equalsIgnoreCase("female")
-                || gender.trim().equalsIgnoreCase("other")) {
+                || gender.trim().equalsIgnoreCase("female")) {
             return true;
         } else {
             throw new UserException("invalid gender", Errors.GENDER, ErrorComponents.GENDER);
@@ -63,19 +66,22 @@ public class UserValidate {
     }
 
     public static boolean emailEquals(String str, String value, ErrorComponents errorComponent) throws UserException {
-        if (!str.equals(value)) return true;
-        else throw new UserException("this email address is already being used", Errors.USED_EMAIL, errorComponent);
+        if (!str.equals(value)) {
+            return true;
+        } else throw new UserException("this email address is already being used", Errors.USED_EMAIL, errorComponent);
     }
 
     public static boolean usernameEquals(String str, String value, ErrorComponents errorComponent) throws UserException {
-        if (!str.equals(value)) return true;
-        else throw new UserException("this username is already being used", Errors.USED_USERNAME, errorComponent);
+        if (!str.equals(value)) {
+            return true;
+        } else throw new UserException("this username is already being used", Errors.USED_USERNAME, errorComponent);
     }
 
     public static boolean usernameRegexValidate(String username) throws UserException {
         Pattern pattern = Pattern.compile(USERNAME_PATTERN);
         Matcher matcher = pattern.matcher(username);
-        if (matcher.matches()) return true;
-        else throw new UserException("username is unusable", Errors.REGEX, ErrorComponents.USERNAME);
+        if (matcher.matches()) {
+            return true;
+        } else throw new UserException("username is unusable", Errors.REGEX, ErrorComponents.USERNAME);
     }
 }

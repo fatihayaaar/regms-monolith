@@ -34,8 +34,8 @@ public class AuthController extends BaseController implements IAuthController {
     @Override
     @PostMapping("/sign-up")
     public boolean signUp(@RequestBody UserDto userDto) throws Exception {
-        if (UserValidate.passwordLengthValidate(userDto.getHashPassword())) {
-            if (UserValidate.passwordValidate(userDto.getHashPassword())) {
+        if (!UserValidate.passwordLengthValidate(userDto.getHashPassword())) {
+            if (!UserValidate.passwordValidate(userDto.getHashPassword())) {
                 return false;
             }
         }

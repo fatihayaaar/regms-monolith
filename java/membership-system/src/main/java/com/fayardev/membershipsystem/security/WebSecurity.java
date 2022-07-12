@@ -1,4 +1,4 @@
-package com.fayardev.membershipsystem.jwt;
+package com.fayardev.membershipsystem.security;
 
 import com.fayardev.membershipsystem.services.UserDetailsServiceImpl;
 import com.fayardev.membershipsystem.services.UserService;

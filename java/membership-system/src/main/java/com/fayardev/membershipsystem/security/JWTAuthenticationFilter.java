@@ -1,4 +1,4 @@
-package com.fayardev.membershipsystem.jwt;
+package com.fayardev.membershipsystem.security;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-import static com.fayardev.membershipsystem.jwt.SecurityConstants.*;
+import static com.fayardev.membershipsystem.security.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

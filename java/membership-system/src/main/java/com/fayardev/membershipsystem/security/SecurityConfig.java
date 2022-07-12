@@ -1,4 +1,4 @@
-package com.fayardev.membershipsystem.jwt;
+package com.fayardev.membershipsystem.security;
 
 import com.auth0.spring.security.api.JwtWebSecurityConfigurer;
 import org.springframework.beans.factory.annotation.Value;

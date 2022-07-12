@@ -27,15 +27,17 @@ public class UserService extends BaseService<User> implements IUserService<User>
     @Override
     @Transactional
     public boolean add(User entity) throws Exception {
+        entity.setUsername(entity.getUsername().trim().toLowerCase());
         if (!this.userValidate(entity)) {
             return false;
         }
         if (!emailControl(entity) || !usernameControl(entity)) {
             return false;
         }
-        entity.setUsername(entity.getUsername().trim().toLowerCase());
         entity.setCreateDate(new Date());
         entity.setActive(true);
+        entity.setConfirm(false);
+        entity.setVerified(false);
         return repository.add(entity);
     }
 

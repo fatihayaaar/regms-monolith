@@ -1,4 +1,4 @@
-package com.fayardev.membershipsystem.jwt;
+package com.fayardev.membershipsystem.security;
 
 public class SecurityConstants {
     public static final String SECRET = "SecretKeyToGenJWTs";
