@@ -10,5 +10,5 @@ public class SecurityConstants {
     public static final String FORGOT_PASSWORD_URL = "/auth/reset-password";
     public static final String FORGOT_PASSWORD_CHANGED_URL = "/auth/save-password-forgot";
     public static final String FORGOT_PASS_CHANGE_URL = "/auth/change-password";
-    public static final String VALID_URL = "/auth/validate/**";
+    public static final String VALID_URL = "/user/validate/**";
 }

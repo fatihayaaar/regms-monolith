@@ -29,7 +29,7 @@ public final class UserController extends BaseController {
         return userService.getEntityByUsername(username).getID() != -1;
     }
 
-    @GetMapping("/validate/email/{email}")
+    @GetMapping("/validate/email-address/{email}")
     public boolean isThereEmail(@PathVariable String email) {
         return userService.getEntityByEmail(email).getID() != -1;
     }
