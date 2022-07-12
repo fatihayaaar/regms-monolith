@@ -3,6 +3,7 @@ package com.fayardev.membershipsystem.dtos;
 import java.util.Date;
 
 public class UserDto {
+
     private String username;
     private String emailAddress;
     private String phoneNo;

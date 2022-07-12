@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Random;
 
 public class IDGenerator {
+
     private static IDGenerator idGenerator;
 
     private IDGenerator() {

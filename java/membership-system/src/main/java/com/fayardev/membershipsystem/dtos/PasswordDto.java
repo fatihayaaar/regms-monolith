@@ -1,6 +1,7 @@
 package com.fayardev.membershipsystem.dtos;
 
 public class PasswordDto {
+
     private String oldPassword;
     private String token;
     private String emailAddress;

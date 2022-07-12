@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.util.Map;
 
 public interface IProfileController {
+
     @GetMapping("/my-profile")
     Object getMyProfile(HttpServletRequest request) throws Exception;
 

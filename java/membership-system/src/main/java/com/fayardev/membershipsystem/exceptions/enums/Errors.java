@@ -1,6 +1,7 @@
 package com.fayardev.membershipsystem.exceptions.enums;
 
 public enum Errors {
+
     NOT_NULL_ERROR,
     MAX_VALUE_LENGTH,
     MIN_VALUE_LENGTH,

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface IAuthController {
+
     @PostMapping("/sign-up")
     boolean signUp(@RequestBody UserDto userDto) throws Exception;
 

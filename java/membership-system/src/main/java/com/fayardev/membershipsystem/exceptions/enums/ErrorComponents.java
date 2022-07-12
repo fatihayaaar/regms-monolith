@@ -1,6 +1,7 @@
 package com.fayardev.membershipsystem.exceptions.enums;
 
 public enum ErrorComponents {
+
     USERNAME,
     EMAIL,
     PASSWORD,

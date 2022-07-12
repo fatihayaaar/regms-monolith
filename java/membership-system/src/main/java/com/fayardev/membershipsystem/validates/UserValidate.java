@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserValidate {
+
     private static final String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     private static final String PASSWORD_PATTERN = "^(?=.*\\d)(?=.*[a-z]).{8,16}$";
     private static final String USERNAME_PATTERN = "^(?=.{3,11}$)[a-z0-9._]+$";
