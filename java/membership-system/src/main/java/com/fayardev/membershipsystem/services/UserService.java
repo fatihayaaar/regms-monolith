@@ -50,7 +50,7 @@ public class UserService extends BaseService<User> implements IUserService<User>
                     } else return false;
                 } else return false;
             } else return false;
-        } else return false;
+        }return false;
     }
 
     private boolean emailControl(User user) throws UserException {

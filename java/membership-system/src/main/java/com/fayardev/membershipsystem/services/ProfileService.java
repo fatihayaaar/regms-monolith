@@ -1,8 +1,14 @@
 package com.fayardev.membershipsystem.services;
 
 import com.fayardev.membershipsystem.entities.Profile;
+import com.fayardev.membershipsystem.entities.User;
+import com.fayardev.membershipsystem.exceptions.ProfileException;
+import com.fayardev.membershipsystem.exceptions.UserException;
 import com.fayardev.membershipsystem.repositories.ProfileRepository;
 import com.fayardev.membershipsystem.services.abstracts.IProfileService;
+import com.fayardev.membershipsystem.util.FileServer;
+import com.fayardev.membershipsystem.util.IDGenerator;
+import com.fayardev.membershipsystem.validates.ProfileValidate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +28,22 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
     @Override
     @Transactional
     public boolean add(Profile entity) throws Exception {
+        if (!this.profileValidate(entity)) {
+            return false;
+        }
+        var avatarBase64 = entity.getAvatarPath();
+        var avatarPath = IDGenerator.mediaNameIDGenerator(IDGenerator.AVATAR);
+        entity.setAvatarPath(avatarPath);
+
+        FileServer.uploadAvatar(avatarBase64, avatarPath);
         return repository.add(entity);
+    }
+
+    private boolean profileValidate(Profile profile) throws ProfileException {
+        if (ProfileValidate.aboutMeValidate(profile.getAboutMe())) {
+            return true;
+        }
+        return false;
     }
 
     @Override

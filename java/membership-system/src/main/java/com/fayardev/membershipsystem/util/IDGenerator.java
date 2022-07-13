@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class IDGenerator {
 
+    public static int AVATAR = 1;
     private static IDGenerator idGenerator;
 
     private IDGenerator() {

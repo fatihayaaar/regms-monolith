@@ -1,5 +1,6 @@
 package com.fayardev.membershipsystem.controllers;
 
+import com.fayardev.membershipsystem.controllers.abstracts.IUserController;
 import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
-public final class UserController extends BaseController {
+public final class UserController extends BaseController implements IUserController {
 
     private final UserService userService;
 
@@ -19,31 +20,19 @@ public final class UserController extends BaseController {
         this.userService = userService;
     }
 
+    @Override
     @PostMapping("/change-username")
     public boolean changeUsername(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws Exception {
         return false;
     }
 
-    @GetMapping("/validate/username/{username}")
-    public boolean isThereUsername(@PathVariable String username) {
-        return userService.getEntityByUsername(username).getID() != -1;
-    }
-
-    @GetMapping("/validate/email-address/{email}")
-    public boolean isThereEmail(@PathVariable String email) {
-        return userService.getEntityByEmail(email).getID() != -1;
-    }
-
-    @GetMapping("/validate/phoneNo/{phoneNo}")
-    public boolean isTherePhoneNo(@PathVariable String phoneNo) {
-        return userService.getEntityByPhoneNo(phoneNo).getID() != -1;
-    }
-
+    @Override
     @PostMapping("/update")
     public boolean update(@RequestBody User user) throws Exception {
         return userService.update(user);
     }
 
+    @Override
     @PostMapping("/delete")
     public boolean delete(@RequestBody int id) throws Exception {
         return userService.delete(id);

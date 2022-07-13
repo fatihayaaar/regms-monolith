@@ -47,6 +47,11 @@ public class ProfileController extends BaseController implements IProfileControl
     @Override
     @GetMapping("/my-profile")
     public Object getMyProfile(HttpServletRequest request) throws Exception {
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return null;
+        }
+        //profileService.getEntityById()
         return null;
     }
 

@@ -43,35 +43,4 @@ public class AuthController extends BaseController implements IAuthController {
         return userService.add(modelMapper.map(userDto, User.class));
     }
 
-    @Override
-    @PostMapping("/check-valid-password")
-    public boolean checkIfValidOldPassword(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws JSONException {
-        BaseEntity user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        return bCryptPasswordEncoder.matches(passwordMap.get("oldPassword"), ((User) user).getHashPassword());
-    }
-
-    @Override
-    @PostMapping("/reset-password")
-    public boolean resetPassword(@RequestBody Map<String, String> userEmail) throws Exception {
-        return false;
-    }
-
-    @Override
-    @PostMapping("/change-password")
-    public boolean showChangePasswordPage(@RequestBody Map<String, String> token) throws Exception {
-        return false;
-    }
-
-    @Override
-    @PostMapping("/save-password-forgot")
-    public String savePassword(@RequestBody Map<String, String> passwordMap) throws Exception {
-        return "";
-    }
-
-    @Override
-    @PostMapping("/change-hash-password")
-    public boolean changePassword(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws Exception {
-        return false;
-    }
-
 }
