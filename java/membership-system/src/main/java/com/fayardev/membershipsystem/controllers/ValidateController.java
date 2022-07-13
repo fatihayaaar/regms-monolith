@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/validate")
-public class ValidateController extends BaseController implements IValidateController {
+public final class ValidateController extends BaseController implements IValidateController {
 
     private final UserService userService;
 

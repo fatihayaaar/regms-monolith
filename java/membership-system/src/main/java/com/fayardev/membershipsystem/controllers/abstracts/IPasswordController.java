@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface IPasswordController {
+
     @PostMapping("/check-valid-password")
     boolean checkIfValidOldPassword(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws JSONException;
 

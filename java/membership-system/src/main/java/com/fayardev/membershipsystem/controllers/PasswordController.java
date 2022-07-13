@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/password")
-public class PasswordController extends BaseController implements IPasswordController {
+public final class PasswordController extends BaseController implements IPasswordController {
 
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;

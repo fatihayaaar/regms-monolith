@@ -19,7 +19,6 @@ public class UserRepository extends BaseRepository<User> implements IUserReposit
     protected UserRepository(EntityManager entityManager) {
         super(entityManager);
         super.setClazz(User.class);
-
     }
 
     @Override

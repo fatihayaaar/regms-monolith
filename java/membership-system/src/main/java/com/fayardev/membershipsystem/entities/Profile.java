@@ -7,7 +7,7 @@ import javax.persistence.*;
 @NamedQueries({
         @NamedQuery(name = "Profile.findByUser", query = "SELECT p FROM Profile p WHERE p.user=:user"),
 })
-public class Profile extends BaseEntity {
+public final class Profile extends BaseEntity {
 
     public static final int MAX_ABOUT_ME_LENGTH = 300;
     public static final int NAME_AND_SURNAME_MAX_LENGTH = 32;

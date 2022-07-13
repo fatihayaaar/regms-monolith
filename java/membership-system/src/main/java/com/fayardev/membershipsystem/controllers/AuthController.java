@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController extends BaseController implements IAuthController {
+public final class AuthController extends BaseController implements IAuthController {
 
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
