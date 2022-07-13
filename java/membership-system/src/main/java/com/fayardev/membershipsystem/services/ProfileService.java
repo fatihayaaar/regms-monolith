@@ -1,9 +1,9 @@
 package com.fayardev.membershipsystem.services;
 
+import com.fayardev.membershipsystem.entities.BaseEntity;
 import com.fayardev.membershipsystem.entities.Profile;
 import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.exceptions.ProfileException;
-import com.fayardev.membershipsystem.exceptions.UserException;
 import com.fayardev.membershipsystem.repositories.ProfileRepository;
 import com.fayardev.membershipsystem.services.abstracts.IProfileService;
 import com.fayardev.membershipsystem.util.FileServer;
@@ -55,6 +55,9 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
     @Override
     @Transactional
     public boolean update(Profile entity) throws Exception {
+        if (!this.profileValidate(entity)) {
+            return false;
+        }
         return repository.update(entity);
     }
 
@@ -68,5 +71,39 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
     @Transactional
     public List<Profile> getEntities() {
         return repository.getEntities();
+    }
+
+    @Override
+    @Transactional
+    public BaseEntity getEntityByUser(User user) {
+        return repository.getEntityByUser(user);
+    }
+
+    @Override
+    @Transactional
+    public boolean changeAboutMe(Profile profile) throws Exception {
+        if (!ProfileValidate.aboutMeValidate(profile.getAboutMe())) {
+            return false;
+        }
+        return this.update(profile);
+    }
+
+    @Override
+    @Transactional
+    public boolean updateAvatar(Profile profile) throws Exception {
+        var avatarBase64 = profile.getAvatarPath();
+        var avatarPath = IDGenerator.mediaNameIDGenerator(IDGenerator.AVATAR);
+
+        profile.setAvatarPath(avatarPath);
+        FileServer.uploadAvatar(avatarBase64, avatarPath);
+
+        return this.update(profile);
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteAvatar(Profile profile) throws Exception {
+        profile.setAvatarPath("");
+        return this.update(profile);
     }
 }

@@ -1,6 +1,7 @@
 package com.fayardev.membershipsystem.repositories;
 
 import com.fayardev.membershipsystem.entities.BaseEntity;
+import com.fayardev.membershipsystem.entities.BlankEntity;
 import com.fayardev.membershipsystem.repositories.abstracts.IRepository;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,7 @@ public abstract class BaseRepository<T extends BaseEntity> implements IRepositor
 
     protected final EntityManager entityManager;
     private Class<T> clazz;
-    private final Session session;
+    protected final Session session;
 
     protected BaseRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -71,4 +72,10 @@ public abstract class BaseRepository<T extends BaseEntity> implements IRepositor
         return this.session.get(this.clazz, id);
     }
 
+    protected BaseEntity listToEntity(List entities) {
+        if (!entities.isEmpty()) {
+            return (BaseEntity) entities.get(0);
+        }
+        return new BlankEntity();
+    }
 }

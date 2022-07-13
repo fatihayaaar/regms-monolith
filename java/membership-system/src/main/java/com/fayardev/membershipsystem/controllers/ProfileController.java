@@ -2,9 +2,7 @@ package com.fayardev.membershipsystem.controllers;
 
 import com.fayardev.membershipsystem.controllers.abstracts.IProfileController;
 import com.fayardev.membershipsystem.dtos.ProfileDto;
-import com.fayardev.membershipsystem.entities.BaseEntity;
 import com.fayardev.membershipsystem.entities.Profile;
-import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.services.ProfileService;
 import com.fayardev.membershipsystem.services.UserService;
 import com.fayardev.membershipsystem.util.HeaderUtil;
@@ -46,31 +44,48 @@ public class ProfileController extends BaseController implements IProfileControl
 
     @Override
     @GetMapping("/my-profile")
-    public Object getMyProfile(HttpServletRequest request) throws Exception {
+    public ProfileDto getMyProfile(HttpServletRequest request) throws Exception {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
             return null;
         }
-        //profileService.getEntityById()
-        return null;
+        return modelMapper.map(profileService.getEntityByUser(user), ProfileDto.class);
     }
 
     @Override
     @PostMapping("/change-about-me")
-    public boolean changeAboutMe(HttpServletRequest request, @RequestBody Map<String, Object> map) throws Exception {
-        return false;
+    public boolean changeAboutMe(HttpServletRequest request, @RequestBody String aboutMe) throws Exception {
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return false;
+        }
+        var profile = profileService.getEntityByUser(user);
+        ((Profile) profile).setAboutMe(aboutMe);
+
+        return profileService.changeAboutMe((Profile) profile);
     }
 
     @Override
     @PostMapping("/update-avatar")
-    public boolean updateAvatar(HttpServletRequest request, @RequestBody Map<String, Object> map) throws Exception {
-        return false;
+    public boolean updateAvatar(HttpServletRequest request, @RequestBody String base64) throws Exception {
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return false;
+        }
+        var profile = profileService.getEntityByUser(user);
+        ((Profile) profile).setAvatarPath(base64);
+
+        return profileService.updateAvatar((Profile) profile);
     }
 
     @Override
     @PostMapping("/delete-avatar")
     public boolean deleteAvatar(HttpServletRequest request) throws Exception {
-        return false;
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return false;
+        }
+        return profileService.deleteAvatar((Profile) profileService.getEntityByUser(user));
     }
 
     @Override

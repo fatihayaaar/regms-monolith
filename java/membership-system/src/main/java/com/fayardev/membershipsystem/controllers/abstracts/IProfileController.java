@@ -20,10 +20,10 @@ public interface IProfileController {
     Object getMyProfile(HttpServletRequest request) throws Exception;
 
     @PostMapping("/change-about-me")
-    boolean changeAboutMe(HttpServletRequest request, @RequestBody Map<String, Object> map) throws Exception;
+    boolean changeAboutMe(HttpServletRequest request, @RequestBody String aboutMe) throws Exception;
 
     @PostMapping("/update-avatar")
-    boolean updateAvatar(HttpServletRequest request, @RequestBody Map<String, Object> map) throws Exception;
+    boolean updateAvatar(HttpServletRequest request, @RequestBody String base64) throws Exception;
 
     @PostMapping("/delete-avatar")
     boolean deleteAvatar(HttpServletRequest request) throws Exception;

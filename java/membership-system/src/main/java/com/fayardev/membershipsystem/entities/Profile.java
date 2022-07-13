@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "profile")
 @NamedQueries({
-        @NamedQuery(name = "Profile.findByUserID", query = "SELECT u FROM Profile u WHERE u.user=:userid"),
+        @NamedQuery(name = "Profile.findByUser", query = "SELECT p FROM Profile p WHERE p.user=:user"),
 })
 public class Profile extends BaseEntity {
 
