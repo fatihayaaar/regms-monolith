@@ -1,8 +1,15 @@
 package com.fayardev.membershipsystem.controllers;
 
 import com.fayardev.membershipsystem.controllers.abstracts.IProfileController;
+import com.fayardev.membershipsystem.dtos.ProfileDto;
+import com.fayardev.membershipsystem.entities.BaseEntity;
+import com.fayardev.membershipsystem.entities.Profile;
+import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.services.ProfileService;
+import com.fayardev.membershipsystem.services.UserService;
+import com.fayardev.membershipsystem.util.HeaderUtil;
 import org.json.JSONException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +22,26 @@ import java.util.Map;
 public class ProfileController extends BaseController implements IProfileController {
 
     private final ProfileService profileService;
+    private final ModelMapper modelMapper;
+    private final UserService userService;
 
     @Autowired
-    public ProfileController(ProfileService profileService) {
+    public ProfileController(ProfileService profileService, ModelMapper modelMapper, UserService userService) {
         this.profileService = profileService;
+        this.modelMapper = modelMapper;
+        this.userService = userService;
+    }
+
+    @Override
+    @GetMapping("/add")
+    public Object addProfile(HttpServletRequest request, @RequestBody ProfileDto profileDto) throws Exception {
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return null;
+        }
+        Profile profile = modelMapper.map(profileDto, Profile.class);
+        profile.setUser(user);
+        return profileService.add(profile);
     }
 
     @Override
@@ -74,6 +97,4 @@ public class ProfileController extends BaseController implements IProfileControl
     public Object search(HttpServletRequest request, @RequestBody Map<String, Object> map) throws JSONException {
         return null;
     }
-
-
 }

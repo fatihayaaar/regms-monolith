@@ -1,5 +1,6 @@
 package com.fayardev.membershipsystem.controllers.abstracts;
 
+import com.fayardev.membershipsystem.dtos.ProfileDto;
 import org.json.JSONException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,9 @@ import java.text.ParseException;
 import java.util.Map;
 
 public interface IProfileController {
+
+    @GetMapping("/add")
+    Object addProfile(HttpServletRequest request, @RequestBody ProfileDto profileDto) throws Exception;
 
     @GetMapping("/my-profile")
     Object getMyProfile(HttpServletRequest request) throws Exception;
