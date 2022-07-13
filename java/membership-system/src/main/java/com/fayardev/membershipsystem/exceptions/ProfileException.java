@@ -1,19 +1,20 @@
 package com.fayardev.membershipsystem.exceptions;
 
 import com.fayardev.membershipsystem.exceptions.enums.ErrorComponents;
+import com.fayardev.membershipsystem.exceptions.enums.Errors;
 
 public class ProfileException extends Exception {
 
     public static final String NAME = "ProfileException";
     private final String message;
     private ErrorComponents errorComponent;
-    private Error error;
+    private Errors error;
 
     public ProfileException(String message) {
         this.message = message;
     }
 
-    public ProfileException(String message, Error error, ErrorComponents errorComponent) {
+    public ProfileException(String message, Errors error, ErrorComponents errorComponent) {
         this.message = message;
         this.error = error;
         this.errorComponent = errorComponent;
@@ -24,11 +25,11 @@ public class ProfileException extends Exception {
         return this.message;
     }
 
-    public Error getError() {
+    public Errors getError() {
         return error;
     }
 
-    public void setError(Error error) {
+    public void setError(Errors error) {
         this.error = error;
     }
 
