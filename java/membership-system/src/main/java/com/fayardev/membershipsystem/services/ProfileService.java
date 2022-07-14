@@ -28,7 +28,7 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
     @Override
     @Transactional
     public boolean add(Profile entity) throws Exception {
-        if (!this.profileValidate(entity)) {
+        if (!ProfileValidate.profileValidate(entity)) {
             return false;
         }
         var avatarBase64 = entity.getAvatarPath();
@@ -37,13 +37,6 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
 
         FileServer.uploadAvatar(avatarBase64, avatarPath);
         return repository.add(entity);
-    }
-
-    private boolean profileValidate(Profile profile) throws ProfileException {
-        if (ProfileValidate.aboutMeValidate(profile.getAboutMe())) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -55,7 +48,7 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
     @Override
     @Transactional
     public boolean update(Profile entity) throws Exception {
-        if (!this.profileValidate(entity)) {
+        if (!ProfileValidate.profileValidate(entity)) {
             return false;
         }
         return repository.update(entity);

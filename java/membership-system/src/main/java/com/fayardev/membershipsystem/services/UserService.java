@@ -28,7 +28,7 @@ public class UserService extends BaseService<User> implements IUserService<User>
     @Transactional
     public boolean add(User entity) throws Exception {
         entity.setUsername(entity.getUsername().trim().toLowerCase());
-        if (!this.userValidate(entity)) {
+        if (!UserValidate.userValidate(entity)) {
             return false;
         }
         if (!emailControl(entity) || !usernameControl(entity)) {
@@ -40,19 +40,6 @@ public class UserService extends BaseService<User> implements IUserService<User>
         entity.setVerified(false);
         return repository.add(entity);
     }
-
-    private boolean userValidate(User user) throws UserException {
-        if (UserValidate.emailLengthValidate(user.getEmailAddress())) {
-            if (UserValidate.strUsernameLengthValidate(user.getUsername())) {
-                if (UserValidate.usernameRegexValidate(user.getUsername())) {
-                    if (UserValidate.emailRegexValidate(user.getEmailAddress())) {
-                        return UserValidate.genderValidate(user.getSex());
-                    } else return false;
-                } else return false;
-            } else return false;
-        }return false;
-    }
-
     private boolean emailControl(User user) throws UserException {
         BaseEntity userLocal = repository.getEntityByEmail(user.getEmailAddress());
         if (userLocal.getID() != -1) {

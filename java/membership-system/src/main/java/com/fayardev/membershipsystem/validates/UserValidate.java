@@ -85,4 +85,18 @@ public class UserValidate {
             return true;
         } else throw new UserException("username is unusable", Errors.REGEX, ErrorComponents.USERNAME);
     }
+
+    public static boolean userValidate(User user) throws UserException {
+        if (UserValidate.emailLengthValidate(user.getEmailAddress())) {
+            if (UserValidate.strUsernameLengthValidate(user.getUsername())) {
+                if (UserValidate.usernameRegexValidate(user.getUsername())) {
+                    if (UserValidate.emailRegexValidate(user.getEmailAddress())) {
+                        return UserValidate.genderValidate(user.getSex());
+                    } else return false;
+                } else return false;
+            } else return false;
+        }
+        return false;
+    }
+
 }
