@@ -8,16 +8,16 @@ import org.springframework.context.annotation.Configuration;
 
 @Aspect
 @Configuration
-public class RepositoryAOP implements IAOP {
+public class ProfileRepositoryAOP implements IAOP {
 
     @Override
-    @Before("execution(* com.fayardev.membershipsystem.repositories.abstracts.IRepository.*(..))")
+    @Before("execution(* com.fayardev.membershipsystem.repositories.abstracts.IProfileRepository.*(..))")
     public void before(JoinPoint joinPoint) {
         System.out.println(joinPoint.getSignature().getName());
     }
 
     @Override
-    @After("execution(* com.fayardev.membershipsystem.repositories.abstracts.IRepository.*(..))")
+    @After("execution(* com.fayardev.membershipsystem.repositories.abstracts.IProfileRepository.*(..))")
     public void after(JoinPoint joinPoint) {
         System.out.println(joinPoint.getSignature().getName());
     }
