@@ -15,6 +15,9 @@ public class UserValidate {
     private static final String USERNAME_PATTERN = "^(?=.{3,11}$)[a-z0-9._]+$";
 
     public static boolean strUsernameLengthValidate(String username) throws UserException {
+        if (username == null) {
+            throw new UserException("null data", Errors.NOT_NULL_ERROR, ErrorComponents.USERNAME);
+        }
         if (!username.trim().isEmpty()) {
             username = username.trim().toLowerCase();
             if (!username.trim().isEmpty() && username.trim().length() <= User.USERNAME_MAX_LENGTH) {
@@ -25,6 +28,9 @@ public class UserValidate {
     }
 
     public static boolean passwordLengthValidate(String password) throws UserException {
+        if (password == null) {
+            throw new UserException("null data", Errors.NOT_NULL_ERROR, ErrorComponents.PASSWORD);
+        }
         if (!password.equals("")) {
             if (password.trim().length() >= User.PASSWORD_MIN_LENGTH
                     && password.length() <= User.PASSWORD_MAX_LENGTH)
@@ -35,6 +41,9 @@ public class UserValidate {
     }
 
     public static boolean passwordValidate(String pass) throws UserException {
+        if (pass == null) {
+            throw new UserException("null data", Errors.NOT_NULL_ERROR, ErrorComponents.PASSWORD);
+        }
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher matcher = pattern.matcher(pass);
         if (matcher.matches()) {
@@ -43,6 +52,9 @@ public class UserValidate {
     }
 
     public static boolean emailLengthValidate(String email) throws UserException {
+        if (email == null) {
+            throw new UserException("null data", Errors.NOT_NULL_ERROR, ErrorComponents.EMAIL);
+        }
         if (email.trim().length() <= User.EMAIL_ADDRESS_MAX_LENGTH && email.trim().length() > 0) {
             return true;
         } else
@@ -50,6 +62,9 @@ public class UserValidate {
     }
 
     public static boolean emailRegexValidate(String email) throws UserException {
+        if (email == null) {
+            throw new UserException("null data", Errors.NOT_NULL_ERROR, ErrorComponents.EMAIL);
+        }
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
         if (matcher.matches()) {
@@ -58,6 +73,9 @@ public class UserValidate {
     }
 
     public static boolean genderValidate(String gender) throws UserException {
+        if (gender == null) {
+            throw new UserException("null data", Errors.NOT_NULL_ERROR, ErrorComponents.GENDER);
+        }
         if (gender.trim().equalsIgnoreCase("male")
                 || gender.trim().equalsIgnoreCase("female")) {
             return true;
@@ -87,6 +105,9 @@ public class UserValidate {
     }
 
     public static boolean userValidate(User user) throws UserException {
+        if (user == null) {
+            throw new UserException("null data", Errors.NOT_NULL_ERROR, ErrorComponents.USER);
+        }
         if (UserValidate.emailLengthValidate(user.getEmailAddress())) {
             if (UserValidate.strUsernameLengthValidate(user.getUsername())) {
                 if (UserValidate.usernameRegexValidate(user.getUsername())) {
