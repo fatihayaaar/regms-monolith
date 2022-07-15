@@ -2,19 +2,16 @@ package com.fayardev.membershipsystem.controllers;
 
 import com.fayardev.membershipsystem.controllers.abstracts.IAuthController;
 import com.fayardev.membershipsystem.dtos.UserDto;
-import com.fayardev.membershipsystem.entities.BaseEntity;
 import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.services.UserService;
-import com.fayardev.membershipsystem.util.HeaderUtil;
 import com.fayardev.membershipsystem.validates.UserValidate;
-import org.json.JSONException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")

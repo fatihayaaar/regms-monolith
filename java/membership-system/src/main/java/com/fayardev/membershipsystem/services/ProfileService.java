@@ -3,7 +3,6 @@ package com.fayardev.membershipsystem.services;
 import com.fayardev.membershipsystem.entities.BaseEntity;
 import com.fayardev.membershipsystem.entities.Profile;
 import com.fayardev.membershipsystem.entities.User;
-import com.fayardev.membershipsystem.exceptions.ProfileException;
 import com.fayardev.membershipsystem.repositories.ProfileRepository;
 import com.fayardev.membershipsystem.services.abstracts.IProfileService;
 import com.fayardev.membershipsystem.util.FileServer;

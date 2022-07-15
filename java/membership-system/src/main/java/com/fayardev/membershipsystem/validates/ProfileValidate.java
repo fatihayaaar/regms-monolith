@@ -33,9 +33,6 @@ public class ProfileValidate {
         if (!ProfileValidate.aboutMeValidate(profile.getAboutMe())) {
             return false;
         }
-        if (!ProfileValidate.nameAndSurnameValidate(profile.getNameAndSurname())) {
-            return false;
-        }
-        return true;
+        return ProfileValidate.nameAndSurnameValidate(profile.getNameAndSurname());
     }
 }

@@ -40,11 +40,11 @@ public class UserService extends BaseService<User> implements IUserService<User>
         entity.setVerified(false);
         return repository.add(entity);
     }
+
     private boolean emailControl(User user) throws UserException {
         BaseEntity userLocal = repository.getEntityByEmail(user.getEmailAddress());
         if (userLocal.getID() != -1) {
-            return UserValidate.emailEquals(user.getEmailAddress(),
-                    ((User) userLocal).getEmailAddress(), ErrorComponents.EMAIL);
+            return UserValidate.emailEquals(user.getEmailAddress(), ((User) userLocal).getEmailAddress(), ErrorComponents.EMAIL);
         }
         return true;
     }
@@ -52,8 +52,7 @@ public class UserService extends BaseService<User> implements IUserService<User>
     private boolean usernameControl(User user) throws UserException {
         BaseEntity userLocal = repository.getEntityByUsername(user.getUsername());
         if (userLocal.getID() != -1) {
-            return UserValidate.usernameEquals(user.getUsername(),
-                    ((User) userLocal).getUsername(), ErrorComponents.USERNAME);
+            return UserValidate.usernameEquals(user.getUsername(), ((User) userLocal).getUsername(), ErrorComponents.USERNAME);
         }
         return true;
     }

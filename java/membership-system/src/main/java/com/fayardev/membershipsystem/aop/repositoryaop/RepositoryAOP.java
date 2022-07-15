@@ -1,5 +1,6 @@
-package com.fayardev.membershipsystem.aop;
+package com.fayardev.membershipsystem.aop.repositoryaop;
 
+import com.fayardev.membershipsystem.aop.repositoryaop.abstracts.IRepositoryAOP;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Aspect
 @Configuration
-public class RepositoryAOP implements IAOP {
+public class RepositoryAOP implements IRepositoryAOP {
 
     @Override
     @Before("execution(* com.fayardev.membershipsystem.repositories.abstracts.IRepository.*(..))")

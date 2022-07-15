@@ -1,16 +1,13 @@
 package com.fayardev.membershipsystem.repositories;
 
 import com.fayardev.membershipsystem.entities.BaseEntity;
-import com.fayardev.membershipsystem.entities.BlankEntity;
 import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.repositories.abstracts.IUserRepository;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Repository
 public class UserRepository extends BaseRepository<User> implements IUserRepository<User> {
