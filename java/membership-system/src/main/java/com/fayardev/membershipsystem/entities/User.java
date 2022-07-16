@@ -2,7 +2,6 @@ package com.fayardev.membershipsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
