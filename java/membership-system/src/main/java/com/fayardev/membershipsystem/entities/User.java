@@ -176,6 +176,5 @@ public final class User extends BaseEntity {
                 "'emailAddress' : '"+ this.emailAddress +"', " +
                 "'sex' : '"+ this.sex +"', " +
                 "}";
-
     }
 }

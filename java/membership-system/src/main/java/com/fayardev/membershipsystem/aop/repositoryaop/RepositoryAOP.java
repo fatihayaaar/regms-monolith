@@ -15,12 +15,12 @@ public class RepositoryAOP implements IRepositoryAOP {
     @Override
     @Before("execution(* com.fayardev.membershipsystem.repositories.abstracts.IRepository.*(..))")
     public void before(JoinPoint joinPoint) {
-        RepositoryLogging.logAfter(joinPoint.getSignature().getName(), joinPoint.getArgs());
+        RepositoryLogging.logBefore(joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
     @Override
     @After("execution(* com.fayardev.membershipsystem.repositories.abstracts.IRepository.*(..))")
     public void after(JoinPoint joinPoint) {
-        RepositoryLogging.logBefore(joinPoint.getSignature().getName());
+        RepositoryLogging.logAfter(joinPoint.getSignature().getName());
     }
 }

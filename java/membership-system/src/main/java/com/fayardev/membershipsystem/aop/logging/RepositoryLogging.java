@@ -30,7 +30,7 @@ public class RepositoryLogging {
         log.info(methodName + "() args: " + objects);
     }
 
-    public static void logAfter(String methodName, Object[] objects) {
+    public static void logBefore(String methodName, Object[] objects) {
         log.info(methodName + " methodu çağrilacak.");
         if (objects == null) {
             return;
@@ -43,7 +43,7 @@ public class RepositoryLogging {
         }
     }
 
-    public static void logBefore(String methodName) {
+    public static void logAfter(String methodName) {
         log.info(methodName + " methodu çağrildi");
     }
 }
