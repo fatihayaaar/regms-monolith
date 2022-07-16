@@ -22,7 +22,7 @@ public final class UserController extends BaseController implements IUserControl
 
     @Override
     @PostMapping("/change")
-    public boolean change(HttpServletRequest request, @RequestParam(name = "type") String type, @RequestBody String val) throws Exception {
+    public boolean change(HttpServletRequest request, @RequestParam String type, @RequestParam String val) throws Exception {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
             return false;

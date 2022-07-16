@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface IUserController {
 
     @PostMapping("/change")
-    boolean change(HttpServletRequest request, @RequestParam(name = "type") String type, @RequestBody String username) throws Exception;
+    boolean change(HttpServletRequest request, @RequestParam String type, @RequestParam String username) throws Exception;
 
     @PostMapping("/update")
     boolean update(@RequestBody User user) throws Exception;
