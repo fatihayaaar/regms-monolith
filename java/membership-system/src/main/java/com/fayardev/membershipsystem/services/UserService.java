@@ -1,6 +1,7 @@
 package com.fayardev.membershipsystem.services;
 
 import com.fayardev.membershipsystem.entities.BaseEntity;
+import com.fayardev.membershipsystem.entities.BlankEntity;
 import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.exceptions.UserException;
 import com.fayardev.membershipsystem.exceptions.enums.ErrorComponents;
@@ -65,7 +66,7 @@ public class UserService extends BaseService<User> implements IUserService<User>
 
     @Override
     @Transactional
-    public boolean update(User entity) throws Exception {
+    public boolean update(User entity) throws UserException {
         return repository.update(entity);
     }
 
@@ -97,5 +98,22 @@ public class UserService extends BaseService<User> implements IUserService<User>
     @Transactional
     public BaseEntity getEntityByPhoneNo(String phoneNo) {
         return repository.getEntityByPhoneNo(phoneNo);
+    }
+
+    @Override
+    @Transactional
+    public boolean changeUsername(User user) throws UserException {
+        var username = user.getUsername();
+        if (!UserValidate.strUsernameLengthValidate(username)) {
+            return false;
+        }
+        if (!UserValidate.usernameRegexValidate(username)) {
+            return false;
+        }
+        BaseEntity entity = this.getEntityByUsername(username);
+        if (entity instanceof BlankEntity) {
+            return this.update(user);
+        }
+        return false;
     }
 }

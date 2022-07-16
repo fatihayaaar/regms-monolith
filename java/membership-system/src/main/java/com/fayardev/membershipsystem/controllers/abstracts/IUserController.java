@@ -10,7 +10,7 @@ import java.util.Map;
 public interface IUserController {
 
     @PostMapping("/change-username")
-    boolean changeUsername(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws Exception;
+    boolean changeUsername(HttpServletRequest request, @RequestBody String username) throws Exception;
 
     @PostMapping("/update")
     boolean update(@RequestBody User user) throws Exception;

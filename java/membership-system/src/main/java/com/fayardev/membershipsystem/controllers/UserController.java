@@ -3,6 +3,7 @@ package com.fayardev.membershipsystem.controllers;
 import com.fayardev.membershipsystem.controllers.abstracts.IUserController;
 import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.services.UserService;
+import com.fayardev.membershipsystem.util.HeaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,14 +26,22 @@ public final class UserController extends BaseController implements IUserControl
 
     @Override
     @PostMapping("/change-username")
-    public boolean changeUsername(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws Exception {
-        return false;
+    public boolean changeUsername(HttpServletRequest request, @RequestBody String username) throws Exception {
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return false;
+        }
+        if (username == null) {
+            return false;
+        }
+        user.setUsername(username);
+        return userService.changeUsername(user);
     }
 
     @Override
     @PostMapping("/update")
     public boolean update(@RequestBody User user) throws Exception {
-        return userService.update(user);
+        return false;
     }
 
     @Override
