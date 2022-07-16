@@ -21,6 +21,5 @@ public class RepositoryAOP implements IRepositoryAOP {
     @Override
     @After("execution(* com.fayardev.membershipsystem.repositories.abstracts.IRepository.*(..))")
     public void after(JoinPoint joinPoint) {
-        RepositoryLogging.logAfter(joinPoint.getSignature().getName());
     }
 }

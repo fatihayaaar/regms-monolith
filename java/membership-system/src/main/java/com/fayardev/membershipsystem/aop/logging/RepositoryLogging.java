@@ -31,7 +31,6 @@ public class RepositoryLogging {
     }
 
     public static void logBefore(String methodName, Object[] objects) {
-        log.info(methodName + " methodu çağrilacak.");
         if (objects == null) {
             return;
         }
@@ -41,9 +40,5 @@ public class RepositoryLogging {
         } else {
             arrayLog(methodName, objects);
         }
-    }
-
-    public static void logAfter(String methodName) {
-        log.info(methodName + " methodu çağrildi");
     }
 }
