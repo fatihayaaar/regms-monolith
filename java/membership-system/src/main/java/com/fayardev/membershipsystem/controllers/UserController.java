@@ -5,13 +5,9 @@ import com.fayardev.membershipsystem.entities.User;
 import com.fayardev.membershipsystem.services.UserService;
 import com.fayardev.membershipsystem.util.HeaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -25,17 +21,34 @@ public final class UserController extends BaseController implements IUserControl
     }
 
     @Override
-    @PostMapping("/change-username")
-    public boolean changeUsername(HttpServletRequest request, @RequestBody String username) throws Exception {
+    @PostMapping("/change")
+    public boolean change(HttpServletRequest request, @RequestParam(name = "type") String type, @RequestBody String val) throws Exception {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
             return false;
         }
-        if (username == null) {
+        if (type == null) {
             return false;
         }
-        user.setUsername(username);
-        return userService.changeUsername(user);
+        if (val == null) {
+            return false;
+        }
+
+        switch (type) {
+            case "username" -> {
+                user.setUsername(val);
+                return userService.changeUsername(user);
+            }
+            case "emailAddress" -> {
+                user.setEmailAddress(val);
+                return userService.changeEmailAddress(user);
+            }
+            case "phoneNo" -> {
+                user.setPhoneNo(val);
+                return userService.changePhoneNo(user);
+            }
+        }
+        return false;
     }
 
     @Override

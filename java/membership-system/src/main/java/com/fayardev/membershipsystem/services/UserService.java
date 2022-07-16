@@ -103,7 +103,8 @@ public class UserService extends BaseService<User> implements IUserService<User>
     @Override
     @Transactional
     public boolean changeUsername(User user) throws UserException {
-        var username = user.getUsername();
+        var username = user.getUsername().trim().toLowerCase();
+        user.setUsername(username);
         if (!UserValidate.strUsernameLengthValidate(username)) {
             return false;
         }
@@ -111,6 +112,35 @@ public class UserService extends BaseService<User> implements IUserService<User>
             return false;
         }
         BaseEntity entity = this.getEntityByUsername(username);
+        if (entity instanceof BlankEntity) {
+            return this.update(user);
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean changeEmailAddress(User user) throws UserException {
+        var emailAddress = user.getEmailAddress().trim();
+        if (!UserValidate.emailLengthValidate(emailAddress)) {
+            return false;
+        }
+        if (!UserValidate.emailRegexValidate(emailAddress)) {
+            return false;
+        }
+        BaseEntity entity = this.getEntityByEmail(emailAddress);
+        if (entity instanceof BlankEntity) {
+            return this.update(user);
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean changePhoneNo(User user) throws UserException {
+        var phoneNo = user.getPhoneNo().trim();
+
+        BaseEntity entity = this.getEntityByPhoneNo(phoneNo);
         if (entity instanceof BlankEntity) {
             return this.update(user);
         }

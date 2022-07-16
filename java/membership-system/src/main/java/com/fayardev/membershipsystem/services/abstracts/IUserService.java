@@ -16,4 +16,10 @@ public interface IUserService<T extends BaseEntity> extends IService<T> {
 
     @Transactional
     boolean changeUsername(User user) throws UserException;
+
+    @Transactional
+    boolean changeEmailAddress(User user) throws UserException;
+
+    @Transactional
+    boolean changePhoneNo(User user) throws UserException;
 }
