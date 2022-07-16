@@ -110,6 +110,12 @@ public final class Profile extends BaseEntity {
 
     @Override
     public String toString() {
-        return null;
+        return "Profile {" +
+                "'id': " + this.ID + ", " +
+                "'username' : '" + this.user.getUsername() + "', " +
+                "'nameAndSurname' : '" + this.nameAndSurname + "', " +
+                "'aboutMe' : '" + this.aboutMe + "', " +
+                "'avatar' : '" + this.avatarPath + "' " +
+                "}";
     }
 }

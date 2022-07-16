@@ -2,6 +2,7 @@ package com.fayardev.membershipsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
@@ -170,6 +171,12 @@ public final class User extends BaseEntity {
 
     @Override
     public String toString() {
-        return null;
+        return "User {" +
+                "'id': " + this.ID + ", " +
+                "'username' : '"+ this.username +"', " +
+                "'emailAddress' : '"+ this.emailAddress +"', " +
+                "'sex' : '"+ this.sex +"', " +
+                "}";
+
     }
 }
