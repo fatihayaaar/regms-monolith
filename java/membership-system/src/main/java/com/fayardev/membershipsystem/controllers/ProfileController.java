@@ -17,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/profile")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public final class ProfileController extends BaseController implements IProfileController {
 
     private final ProfileService profileService;
