@@ -1,8 +1,12 @@
 package com.fayardev.regms.controllers;
 
 import com.fayardev.regms.controllers.abstracts.IPasswordController;
+import com.fayardev.regms.dtos.PasswordDto;
 import com.fayardev.regms.entities.BaseEntity;
 import com.fayardev.regms.entities.User;
+import com.fayardev.regms.exceptions.UserException;
+import com.fayardev.regms.exceptions.enums.ErrorComponents;
+import com.fayardev.regms.exceptions.enums.Errors;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.util.HeaderUtil;
 import org.json.JSONException;
@@ -39,25 +43,30 @@ public final class PasswordController extends BaseController implements IPasswor
 
     @Override
     @PostMapping("/reset-password")
-    public boolean resetPassword(@RequestBody Map<String, String> userEmail) throws Exception {
+    public boolean resetPassword(@RequestBody PasswordDto passwordDto) throws Exception {
+        var user = userService.getEntityByEmail(passwordDto.getEmailAddress());
+        if (user == null) {
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+        }
+
         return false;
     }
 
     @Override
     @PostMapping("/change-password")
-    public boolean showChangePasswordPage(@RequestBody Map<String, String> token) throws Exception {
+    public boolean showChangePasswordPage(@RequestBody PasswordDto passwordDto) throws Exception {
         return false;
     }
 
     @Override
     @PostMapping("/save-password-forgot")
-    public String savePassword(@RequestBody Map<String, String> passwordMap) throws Exception {
+    public String savePassword(@RequestBody PasswordDto passwordDto) throws Exception {
         return "";
     }
 
     @Override
     @PostMapping("/change-hash-password")
-    public boolean changePassword(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws Exception {
+    public boolean changePassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws Exception {
         return false;
     }
 }
