@@ -3,6 +3,7 @@ package com.fayardev.regms.controllers;
 import com.fayardev.regms.controllers.abstracts.IPasswordController;
 import com.fayardev.regms.dtos.PasswordDto;
 import com.fayardev.regms.entities.BaseEntity;
+import com.fayardev.regms.entities.PasswordReset;
 import com.fayardev.regms.entities.User;
 import com.fayardev.regms.exceptions.UserException;
 import com.fayardev.regms.exceptions.enums.ErrorComponents;
@@ -11,6 +12,7 @@ import com.fayardev.regms.services.PasswordResetService;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.util.HeaderUtil;
 import com.fayardev.regms.util.temptoken.ValidationToken;
+import com.fayardev.regms.validates.UserValidate;
 import org.json.JSONException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/password")
@@ -43,9 +44,9 @@ public final class PasswordController extends BaseController implements IPasswor
 
     @Override
     @PostMapping("/check-valid-password")
-    public boolean checkIfValidOldPassword(HttpServletRequest request, @RequestBody Map<String, String> passwordMap) throws JSONException {
+    public boolean checkIfValidOldPassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws JSONException {
         BaseEntity user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        return bCryptPasswordEncoder.matches(passwordMap.get("oldPassword"), ((User) user).getHashPassword());
+        return bCryptPasswordEncoder.matches(passwordDto.getOldPassword(), ((User) user).getHashPassword());
     }
 
     @Override
@@ -61,18 +62,62 @@ public final class PasswordController extends BaseController implements IPasswor
     @Override
     @PostMapping("/change-password")
     public boolean showChangePasswordPage(@RequestBody PasswordDto passwordDto) throws Exception {
-        return false;
+        if (!UserValidate.passwordLengthValidate(passwordDto.getNewPassword())) {
+            if (!UserValidate.passwordValidate(passwordDto.getNewPassword())) {
+                return false;
+            }
+        }
+        var password = passwordDto.getNewPassword();
+        var token = passwordDto.getToken();
+        if (token == null) {
+            return false;
+        }
+        var user = service.getUserByTokenPassword(passwordDto.getToken());
+        if (user.getID() == -1) {
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+        }
+        return service.changeUserPassword((User) user, password, token);
     }
 
     @Override
     @PostMapping("/save-password-forgot")
     public String savePassword(@RequestBody PasswordDto passwordDto) throws Exception {
-        return "";
+        var user = userService.getEntityByEmail(passwordDto.getEmailAddress());
+        if (user == null) {
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+        }
+        PasswordReset passwordReset = (PasswordReset) service.getPassTokenByEmail(passwordDto.getEmailAddress());
+        service.numberOfInteractionsInc(passwordReset);
+
+        String result = service.validatePasswordResetToken(passwordDto.getToken(), ((User) user).getEmailAddress());
+        if (result == null) {
+            return "null";
+        }
+
+        passwordReset = (PasswordReset) service.getUserByTokenPassword(passwordDto.getToken());
+        if (passwordReset.isActive()) {
+            service.activeCompPassToken(passwordReset);
+            return passwordReset.getTokenPassword();
+        }
+        return "null";
     }
 
     @Override
     @PostMapping("/change-hash-password")
     public boolean changePassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws Exception {
-        return false;
+        if (!checkIfValidOldPassword(request, passwordDto)) {
+            return false;
+        }
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return false;
+        }
+        if (!UserValidate.passwordLengthValidate(passwordDto.getNewPassword())) {
+            if (!UserValidate.passwordValidate(passwordDto.getNewPassword())) {
+                return false;
+            }
+        }
+        user.setHashPassword(bCryptPasswordEncoder.encode(passwordDto.getNewPassword()));
+        return userService.update(user);
     }
 }

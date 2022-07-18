@@ -12,7 +12,7 @@ public interface IPasswordResetService<T extends BaseEntity> extends IService<T>
     boolean createPasswordResetTokenForUser(User user, String token, String passwordToken) throws Exception;
 
     @Transactional
-    boolean changeUserPassword(User user, String password) throws Exception;
+    boolean changeUserPassword(User user, String password, String token) throws Exception;
 
     @Transactional
     BaseEntity getUserByPasswordResetToken(String token);

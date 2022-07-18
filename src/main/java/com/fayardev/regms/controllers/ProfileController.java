@@ -5,6 +5,9 @@ import com.fayardev.regms.dtos.*;
 import com.fayardev.regms.entities.BaseEntity;
 import com.fayardev.regms.entities.Profile;
 import com.fayardev.regms.entities.User;
+import com.fayardev.regms.exceptions.UserException;
+import com.fayardev.regms.exceptions.enums.ErrorComponents;
+import com.fayardev.regms.exceptions.enums.Errors;
 import com.fayardev.regms.services.ProfileService;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.util.HeaderUtil;
@@ -37,7 +40,7 @@ public final class ProfileController extends BaseController implements IProfileC
     public Object addProfile(HttpServletRequest request, @RequestBody ProfileDto profileDto) throws Exception {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
-            return null;
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         Profile profile = modelMapper.map(profileDto, Profile.class);
         profile.setUser(user);
@@ -49,7 +52,7 @@ public final class ProfileController extends BaseController implements IProfileC
     public ProfileDto getMyProfile(HttpServletRequest request) throws Exception {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
-            return null;
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         return modelMapper.map(profileService.getEntityByUser(user), ProfileDto.class);
     }
@@ -59,7 +62,7 @@ public final class ProfileController extends BaseController implements IProfileC
     public boolean changeAboutMe(HttpServletRequest request, @RequestBody String aboutMe) throws Exception {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
-            return false;
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         var profile = profileService.getEntityByUser(user);
         ((Profile) profile).setAboutMe(aboutMe);
@@ -72,7 +75,7 @@ public final class ProfileController extends BaseController implements IProfileC
     public boolean updateAvatar(HttpServletRequest request, @RequestBody String base64) throws Exception {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
-            return false;
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         var profile = profileService.getEntityByUser(user);
         ((Profile) profile).setAvatarPath(base64);
@@ -85,17 +88,17 @@ public final class ProfileController extends BaseController implements IProfileC
     public boolean deleteAvatar(HttpServletRequest request) throws Exception {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
-            return false;
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         return profileService.deleteAvatar((Profile) profileService.getEntityByUser(user));
     }
 
     @Override
     @GetMapping("/{username}")
-    public Object getProfile(HttpServletRequest request, @PathVariable String username, @RequestParam String type) throws JSONException {
+    public Object getProfile(HttpServletRequest request, @PathVariable String username, @RequestParam String type) throws JSONException, UserException {
         var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
         if (user == null) {
-            return false;
+            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         BaseEntity theUser = userService.getEntityByUsername(username);
         if (theUser.getID() == -1) {
