@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -37,5 +39,4 @@ public final class AuthController extends BaseController implements IAuthControl
         userDto.setHashPassword(bCryptPasswordEncoder.encode(userDto.getHashPassword()));
         return userService.add(modelMapper.map(userDto, User.class));
     }
-
 }
