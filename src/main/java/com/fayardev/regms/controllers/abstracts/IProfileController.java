@@ -2,10 +2,7 @@ package com.fayardev.regms.controllers.abstracts;
 
 import com.fayardev.regms.dtos.ProfileDto;
 import org.json.JSONException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -29,10 +26,7 @@ public interface IProfileController {
     boolean deleteAvatar(HttpServletRequest request) throws Exception;
 
     @GetMapping("/{username}")
-    Object getProfile(HttpServletRequest request, @PathVariable String username) throws JSONException, ParseException;
-
-    @PostMapping("/detail")
-    Object userMiniDetail(HttpServletRequest request, @RequestBody Map<String, Object> map) throws JSONException;
+    Object getProfile(HttpServletRequest request, @PathVariable String username, @RequestParam String type) throws JSONException, ParseException;
 
     @PostMapping("/timeline-get-profile")
     Object timelineGetProfile(HttpServletRequest request, @RequestBody Map<String, Object> map) throws Exception;

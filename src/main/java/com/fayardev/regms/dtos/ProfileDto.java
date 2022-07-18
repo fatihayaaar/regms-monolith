@@ -1,7 +1,5 @@
 package com.fayardev.regms.dtos;
 
-import com.fayardev.regms.entities.User;
-
 public class ProfileDto {
 
     private String nameAndSurname;
@@ -10,7 +8,7 @@ public class ProfileDto {
     private boolean privacy;
     private boolean showProfile;
     private boolean isOpenNotification;
-    private User user;
+    private UserDto user;
 
     public String getNameAndSurname() {
         return nameAndSurname;
@@ -60,11 +58,11 @@ public class ProfileDto {
         isOpenNotification = openNotification;
     }
 
-    public User getUser() {
+    public UserDto getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDto user) {
         this.user = user;
     }
 

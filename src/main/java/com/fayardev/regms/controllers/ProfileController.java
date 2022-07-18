@@ -1,8 +1,10 @@
 package com.fayardev.regms.controllers;
 
 import com.fayardev.regms.controllers.abstracts.IProfileController;
-import com.fayardev.regms.dtos.ProfileDto;
+import com.fayardev.regms.dtos.*;
+import com.fayardev.regms.entities.BaseEntity;
 import com.fayardev.regms.entities.Profile;
+import com.fayardev.regms.entities.User;
 import com.fayardev.regms.services.ProfileService;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.util.HeaderUtil;
@@ -12,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 import java.util.Map;
 
 @RestController
@@ -91,14 +92,30 @@ public final class ProfileController extends BaseController implements IProfileC
 
     @Override
     @GetMapping("/{username}")
-    public Object getProfile(HttpServletRequest request, @PathVariable String username) throws JSONException, ParseException {
-        return null;
-    }
+    public Object getProfile(HttpServletRequest request, @PathVariable String username, @RequestParam String type) throws JSONException {
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return false;
+        }
+        BaseEntity theUser = userService.getEntityByUsername(username);
+        if (theUser.getID() == -1) {
+            return false;
+        }
+        BaseEntity theProfile = profileService.getEntityByUser((User) theUser);
+        if (theProfile.getID() == -1) {
+            return false;
+        }
+        if (type.equals("mini")) {
+            OtherUserMiniDto otherUserMiniDto = modelMapper.map(theUser, OtherUserMiniDto.class);
+            OtherProfileMiniDto otherProfileMiniDto = modelMapper.map(theProfile, OtherProfileMiniDto.class);
+            otherProfileMiniDto.setOtherUserMiniDto(otherUserMiniDto);
+            return otherProfileMiniDto;
+        }
+        OtherUserDto otherUserDto = modelMapper.map(theUser, OtherUserDto.class);
+        OtherProfileDto otherProfileDto = modelMapper.map(theProfile, OtherProfileDto.class);
+        otherProfileDto.setOtherUserDto(otherUserDto);
 
-    @Override
-    @PostMapping("/detail")
-    public Object userMiniDetail(HttpServletRequest request, @RequestBody Map<String, Object> map) throws JSONException {
-        return null;
+        return otherProfileDto;
     }
 
     @Override

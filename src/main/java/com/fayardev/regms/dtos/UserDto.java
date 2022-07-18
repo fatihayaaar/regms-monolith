@@ -10,6 +10,42 @@ public class UserDto {
     private String hashPassword;
     private String sex;
     private Date birthDate;
+    private Date createDate;
+    private boolean isActive;
+    private boolean verified;
+    private boolean confirm;
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public boolean isConfirm() {
+        return confirm;
+    }
+
+    public void setConfirm(boolean confirm) {
+        this.confirm = confirm;
+    }
 
     public String getUsername() {
         return username;
