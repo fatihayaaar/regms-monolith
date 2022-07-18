@@ -2,7 +2,6 @@ package com.fayardev.regms.controllers;
 
 import com.fayardev.regms.controllers.abstracts.IPasswordController;
 import com.fayardev.regms.dtos.PasswordDto;
-import com.fayardev.regms.entities.BaseEntity;
 import com.fayardev.regms.entities.PasswordReset;
 import com.fayardev.regms.entities.User;
 import com.fayardev.regms.exceptions.UserException;
@@ -45,13 +44,16 @@ public final class PasswordController extends BaseController implements IPasswor
     @Override
     @PostMapping("/check-valid-password")
     public boolean checkIfValidOldPassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws JSONException {
-        BaseEntity user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        return bCryptPasswordEncoder.matches(passwordDto.getOldPassword(), ((User) user).getHashPassword());
+        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
+        if (user == null) {
+            return false;
+        }
+        return bCryptPasswordEncoder.matches(passwordDto.getOldPassword(), user.getHashPassword());
     }
 
     @Override
-    @PostMapping("/reset-password")
-    public boolean resetPassword(@RequestBody PasswordDto passwordDto) throws Exception {
+    @PostMapping("/forgot-password")
+    public boolean forgotPassword(@RequestBody PasswordDto passwordDto) throws Exception {
         var user = userService.getEntityByEmail(passwordDto.getEmailAddress());
         if (user == null) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
@@ -60,8 +62,8 @@ public final class PasswordController extends BaseController implements IPasswor
     }
 
     @Override
-    @PostMapping("/change-password")
-    public boolean showChangePasswordPage(@RequestBody PasswordDto passwordDto) throws Exception {
+    @PostMapping("/change-password-with-token")
+    public boolean changePasswordWithToken(@RequestBody PasswordDto passwordDto) throws Exception {
         if (!UserValidate.passwordLengthValidate(passwordDto.getNewPassword())) {
             if (!UserValidate.passwordValidate(passwordDto.getNewPassword())) {
                 return false;
@@ -80,8 +82,8 @@ public final class PasswordController extends BaseController implements IPasswor
     }
 
     @Override
-    @PostMapping("/save-password-forgot")
-    public String savePassword(@RequestBody PasswordDto passwordDto) throws Exception {
+    @PostMapping("/get-password-forgot-token")
+    public String getPasswordForgotToken(@RequestBody PasswordDto passwordDto) throws Exception {
         var user = userService.getEntityByEmail(passwordDto.getEmailAddress());
         if (user == null) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
@@ -89,21 +91,21 @@ public final class PasswordController extends BaseController implements IPasswor
         PasswordReset passwordReset = (PasswordReset) service.getPassTokenByEmail(passwordDto.getEmailAddress());
         service.numberOfInteractionsInc(passwordReset);
 
-        String result = service.validatePasswordResetToken(passwordDto.getToken(), ((User) user).getEmailAddress());
+        String result = service.validatePasswordValidateCode(passwordDto.getValidateCode(), ((User) user).getEmailAddress());
         if (result == null) {
-            return "null";
+            return "expired";
         }
 
-        passwordReset = (PasswordReset) service.getUserByTokenPassword(passwordDto.getToken());
+        //passwordReset = (PasswordReset) service.getUserByTokenPassword(passwordDto.getToken());
         if (passwordReset.isActive()) {
             service.activeCompPassToken(passwordReset);
             return passwordReset.getTokenPassword();
         }
-        return "null";
+        return "expired";
     }
 
     @Override
-    @PostMapping("/change-hash-password")
+    @PostMapping("/change-password")
     public boolean changePassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws Exception {
         if (!checkIfValidOldPassword(request, passwordDto)) {
             return false;

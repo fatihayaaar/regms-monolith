@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @NamedQueries(value = {
-        @NamedQuery(name = "PasswordReset.findByToken", query = "SELECT pr FROM PasswordReset pr WHERE pr.token=:token"),
+        @NamedQuery(name = "PasswordReset.findByValidateCode", query = "SELECT pr FROM PasswordReset pr WHERE pr.validateCode=:validateCode"),
         @NamedQuery(name = "PasswordReset.findByEmail", query = "SELECT pr FROM PasswordReset pr WHERE pr.emailAddress=:emailAddress and pr.isActive=true order by pr.expiryDate desc "),
         @NamedQuery(name = "PasswordReset.findByTokenPassword", query = "SELECT pr FROM PasswordReset pr WHERE pr.tokenPassword=:tokenPassword"),
 })
@@ -13,14 +13,14 @@ import java.util.Date;
 public final class PasswordReset extends BaseEntity {
 
     public static final int TOKEN_EXPIRATION = 60 * 2 * 60;
-    private static final int EXPIRATION = 2;
+    public static final int EXPIRATION = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "token")
-    private String token;
+    @Column(name = "validatecode")
+    private String validateCode;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "userid")
@@ -44,17 +44,13 @@ public final class PasswordReset extends BaseEntity {
     @Column(name = "isactivetokenpassword")
     private boolean isActiveTokenPassword;
 
-    public PasswordReset(String token, User user) {
-        this.token = token;
+    public PasswordReset(String validateCode, User user) {
+        this.validateCode = validateCode;
         this.user = user;
     }
 
     public PasswordReset() {
 
-    }
-
-    public static int getEXPIRATION() {
-        return EXPIRATION;
     }
 
     public String getTokenPassword() {
@@ -110,12 +106,12 @@ public final class PasswordReset extends BaseEntity {
         return null;
     }
 
-    public String getToken() {
-        return token;
+    public String getValidateCode() {
+        return validateCode;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setValidateCode(String token) {
+        this.validateCode = token;
     }
 
     public User getUser() {

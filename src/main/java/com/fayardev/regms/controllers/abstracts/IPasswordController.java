@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 public interface IPasswordController {
 
@@ -14,13 +13,13 @@ public interface IPasswordController {
     boolean checkIfValidOldPassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws JSONException;
 
     @PostMapping("/reset-password")
-    boolean resetPassword(@RequestBody PasswordDto passwordDto) throws Exception;
+    boolean forgotPassword(@RequestBody PasswordDto passwordDto) throws Exception;
 
     @PostMapping("/change-password")
-    boolean showChangePasswordPage(@RequestBody PasswordDto passwordDto) throws Exception;
+    boolean changePasswordWithToken(@RequestBody PasswordDto passwordDto) throws Exception;
 
     @PostMapping("/save-password-forgot")
-    String savePassword(@RequestBody PasswordDto passwordDto) throws Exception;
+    String getPasswordForgotToken(@RequestBody PasswordDto passwordDto) throws Exception;
 
     @PostMapping("/change-hash-password")
     boolean changePassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws Exception;

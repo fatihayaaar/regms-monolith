@@ -4,6 +4,7 @@ public class PasswordDto {
 
     private String oldPassword;
     private String token;
+    private String validateCode;
     private String emailAddress;
     private String newPassword;
 
@@ -37,5 +38,13 @@ public class PasswordDto {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public String getValidateCode() {
+        return validateCode;
+    }
+
+    public void setValidateCode(String validateCode) {
+        this.validateCode = validateCode;
     }
 }

@@ -61,8 +61,8 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
 
     @Override
     @Transactional
-    public boolean createPasswordResetTokenForUser(User user, String token, String passwordToken) throws Exception {
-        PasswordReset myToken = new PasswordReset(token, user);
+    public boolean createPasswordResetTokenForUser(User user, String validateCode, String passwordToken) throws Exception {
+        PasswordReset myToken = new PasswordReset(validateCode, user);
         myToken.setExpiryDate(new Date());
         myToken.setActive(true);
         myToken.setEmailAddress(user.getEmailAddress());
@@ -88,7 +88,7 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
     @Override
     @Transactional
     public BaseEntity getUserByPasswordResetToken(String token) {
-        return repository.findByToken(token);
+        return repository.findByValidateCode(token);
     }
 
     @Override
@@ -137,8 +137,8 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
 
     @Override
     @Transactional
-    public String validatePasswordResetToken(String token, String email) {
-        final BaseEntity passToken = repository.findByToken(token);
+    public String validatePasswordValidateCode(String validateCode, String email) {
+        final BaseEntity passToken = repository.findByValidateCode(validateCode);
         if (passToken.getID() == -1) return "expired";
 
         return !isTokenExpired((PasswordReset) passToken) ? "expired"

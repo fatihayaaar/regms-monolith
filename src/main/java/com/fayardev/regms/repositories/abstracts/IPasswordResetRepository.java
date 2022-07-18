@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 public interface IPasswordResetRepository<T extends BaseEntity> extends IRepository<T> {
 
     @Transactional
-    BaseEntity findByToken(String token);
+    BaseEntity findByValidateCode(String token);
 
     @Transactional
     BaseEntity findByEmail(String email);

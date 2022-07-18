@@ -19,10 +19,10 @@ public class PasswordResetRepository extends BaseRepository<PasswordReset> imple
 
     @Override
     @Transactional
-    public BaseEntity findByToken(String token) {
+    public BaseEntity findByValidateCode(String validateCode) {
         return super.listToEntity(this.session
-                .getNamedQuery("PasswordReset.findByToken")
-                .setParameter("token", token)
+                .getNamedQuery("PasswordReset.findByValidateCode")
+                .setParameter("validateCode", validateCode)
                 .list());
     }
 
