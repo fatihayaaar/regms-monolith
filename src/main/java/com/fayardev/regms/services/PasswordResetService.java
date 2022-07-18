@@ -129,5 +129,23 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
     public BaseEntity getTokenByPasswordToken(String token) {
         return repository.findByPasswordToken(token);
     }
+
+    @Override
+    @Transactional
+    public String validatePasswordResetToken(String token, String email) {
+        final BaseEntity passToken = repository.findByToken(token);
+        if (passToken.getID() == -1) return "expired";
+
+        return !isTokenExpired((PasswordReset) passToken) ? "expired"
+                : !((PasswordReset) passToken).getEmailAddress().equals(email) ? "expired"
+                : !((PasswordReset) passToken).isActive() ? "expired"
+                : null;
+    }
+
+    private boolean isTokenExpired(PasswordReset passToken) {
+        Date now = new Date();
+        long seconds = (now.getTime() - passToken.getExpiryDate().getTime()) / 1000;
+        return passToken.getExpiryDate().before(now) && seconds <= 120 && seconds >= 0;
+    }
 }
 

@@ -34,4 +34,7 @@ public interface IPasswordResetService<T extends BaseEntity> extends IService<T>
 
     @Transactional
     BaseEntity getTokenByPasswordToken(String token);
+
+    @Transactional
+    String validatePasswordResetToken(String token, String email);
 }
