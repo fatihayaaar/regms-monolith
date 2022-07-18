@@ -4,16 +4,16 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@NamedQueries({
-        @NamedQuery(name = "PasswordResetToken.findByToken", query = "SELECT u FROM PasswordResetToken u WHERE u.token=:token"),
-        @NamedQuery(name = "PasswordResetToken.findByEmail", query = "SELECT u FROM PasswordResetToken u WHERE u.emailAddress=:emailAddress and u.isActive=true order by u.expiryDate desc "),
-        @NamedQuery(name = "PasswordResetToken.findByTokenPassword", query = "SELECT u FROM PasswordResetToken u WHERE u.tokenPassword=:tokenPassword"),
+@NamedQueries(value = {
+        @NamedQuery(name = "PasswordReset.findByToken", query = "SELECT pr FROM PasswordReset pr WHERE pr.token=:token"),
+        @NamedQuery(name = "PasswordReset.findByEmail", query = "SELECT pr FROM PasswordReset pr WHERE pr.emailAddress=:emailAddress and pr.isActive=true order by pr.expiryDate desc "),
+        @NamedQuery(name = "PasswordReset.findByTokenPassword", query = "SELECT pr FROM PasswordReset pr WHERE pr.tokenPassword=:tokenPassword"),
 })
-@Table(name = "passwordresettoken")
-public final class PasswordResetToken extends BaseEntity {
+@Table(name = "passwordreset")
+public final class PasswordReset extends BaseEntity {
 
-    private static final int EXPIRATION = 2;
     public static final int TOKEN_EXPIRATION = 60 * 2 * 60;
+    private static final int EXPIRATION = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,12 +44,12 @@ public final class PasswordResetToken extends BaseEntity {
     @Column(name = "isactivetokenpassword")
     private boolean isActiveTokenPassword;
 
-    public PasswordResetToken(String token, User user) {
+    public PasswordReset(String token, User user) {
         this.token = token;
         this.user = user;
     }
 
-    public PasswordResetToken() {
+    public PasswordReset() {
 
     }
 

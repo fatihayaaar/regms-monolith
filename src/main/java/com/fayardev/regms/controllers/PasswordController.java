@@ -7,11 +7,14 @@ import com.fayardev.regms.entities.User;
 import com.fayardev.regms.exceptions.UserException;
 import com.fayardev.regms.exceptions.enums.ErrorComponents;
 import com.fayardev.regms.exceptions.enums.Errors;
+import com.fayardev.regms.services.PasswordResetService;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.util.HeaderUtil;
+import com.fayardev.regms.util.temptoken.ValidationToken;
 import org.json.JSONException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,15 +26,19 @@ import java.util.Map;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public final class PasswordController extends BaseController implements IPasswordController {
 
+    private final PasswordResetService service;
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JavaMailSender mailSender;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public PasswordController(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
+    public PasswordController(PasswordResetService service, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender mailSender, ModelMapper modelMapper) {
+        this.service = service;
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.modelMapper = modelMapper;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -48,8 +55,7 @@ public final class PasswordController extends BaseController implements IPasswor
         if (user == null) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
-
-        return false;
+        return ValidationToken.getInstance().sendForgotPasswordValidationCode(mailSender, service, (User) user);
     }
 
     @Override

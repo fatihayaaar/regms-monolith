@@ -2,16 +2,13 @@ package com.fayardev.regms.services;
 
 import com.fayardev.regms.entities.BaseEntity;
 import com.fayardev.regms.entities.BlankEntity;
-import com.fayardev.regms.entities.PasswordResetToken;
 import com.fayardev.regms.entities.User;
 import com.fayardev.regms.exceptions.UserException;
 import com.fayardev.regms.exceptions.enums.ErrorComponents;
-import com.fayardev.regms.repositories.PasswordTokenRepository;
 import com.fayardev.regms.repositories.UserRepository;
 import com.fayardev.regms.services.abstracts.IUserService;
 import com.fayardev.regms.validates.UserValidate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,14 +19,10 @@ import java.util.List;
 public class UserService extends BaseService<User> implements IUserService<User> {
 
     private final UserRepository repository;
-    private final PasswordTokenRepository passwordTokenRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(UserRepository repository, PasswordTokenRepository passwordTokenRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository repository) {
         this.repository = repository;
-        this.passwordTokenRepository = passwordTokenRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -161,62 +154,4 @@ public class UserService extends BaseService<User> implements IUserService<User>
         return this.update(user);
     }
 
-    @Transactional
-    public void createPasswordResetTokenForUser(User user, String token, String passwordToken) throws Exception {
-        PasswordResetToken myToken = new PasswordResetToken(token, user);
-        myToken.setExpiryDate(new Date());
-        myToken.setActive(true);
-        myToken.setEmailAddress(user.getEmailAddress());
-        myToken.setNumberOfInteractions(0);
-        myToken.setTokenPassword(passwordToken);
-        myToken.setActiveTokenPassword(true);
-        passwordTokenRepository.add(myToken);
-    }
-
-    @Transactional
-    public void changeUserPassword(User user, String password) throws Exception {
-        user.setHashPassword(bCryptPasswordEncoder.encode(password));
-        this.repository.update(user);
-    }
-
-    @Transactional
-    public BaseEntity getUserByPasswordResetToken(String token) {
-        return passwordTokenRepository.findByToken(token);
-    }
-
-    @Transactional
-    public boolean numberOfInteractionsInc(PasswordResetToken passwordResetToken) {
-        return passwordTokenRepository.numberOfInteractionsInc(passwordResetToken);
-    }
-
-    @Transactional
-    public boolean activeCompPassToken(PasswordResetToken passwordResetToken) throws Exception {
-        passwordResetToken.setActive(false);
-        return passwordTokenRepository.update(passwordResetToken);
-    }
-
-    @Transactional
-    public boolean activePasswordToken(PasswordResetToken passwordResetToken) throws Exception {
-        passwordResetToken.setActiveTokenPassword(false);
-        return passwordTokenRepository.update(passwordResetToken);
-    }
-
-    @Transactional
-    public BaseEntity getPassTokenByEmail(String email) {
-        return passwordTokenRepository.findByEmail(email);
-    }
-
-    @Transactional
-    public BaseEntity getUserByTokenPassword(String token) {
-        BaseEntity entity = passwordTokenRepository.findByPasswordToken(token);
-        if (entity.getID() != -1) {
-            return repository.getEntityById(((PasswordResetToken) entity).getUser().getID());
-        }
-        return new BlankEntity();
-    }
-
-    @Transactional
-    public BaseEntity getTokenByPasswordToken(String token) {
-        return passwordTokenRepository.findByPasswordToken(token);
-    }
 }
