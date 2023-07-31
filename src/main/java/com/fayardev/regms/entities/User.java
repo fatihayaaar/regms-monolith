@@ -1,5 +1,6 @@
 package com.fayardev.regms.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Formula;
@@ -15,7 +16,7 @@ import java.util.Date;
         @NamedQuery(name = "User.findByEmailAddress", query = "SELECT u FROM User u WHERE u.emailAddress=:email"),
         @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username=:username"),
 })
-@JsonIgnoreProperties(allowSetters = true, value = {"hashpassword"})
+@JsonIgnoreProperties(allowSetters = true, value = {"password"})
 public final class User extends BaseEntity {
 
     public static final int PASSWORD_MIN_LENGTH = 8;
@@ -41,9 +42,10 @@ public final class User extends BaseEntity {
     private String phoneNo;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(name = "hashpassword", nullable = false)
+    @JsonIgnore
+    @Column(name = "password", nullable = false)
     @Type(type = "text")
-    private String hashPassword;
+    private String password;
 
     @Column(name = "sex", nullable = false, length = SEX_MAX_LENGTH)
     private String sex;
@@ -112,12 +114,12 @@ public final class User extends BaseEntity {
         this.phoneNo = phoneNo;
     }
 
-    public String getHashPassword() {
-        return hashPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setHashPassword(String hashPassword) {
-        this.hashPassword = hashPassword;
+    public void setPassword(String hashPassword) {
+        this.password = hashPassword;
     }
 
     public String getSex() {

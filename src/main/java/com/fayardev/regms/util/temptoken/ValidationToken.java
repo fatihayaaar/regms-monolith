@@ -38,11 +38,11 @@ public class ValidationToken implements IValidationToken {
         if (passwordResetToken.getID() != -1) {
             PasswordReset passwordReset1 = (PasswordReset) passwordResetToken;
             if (!passwordReset1.isActive() || (new Date().getTime() - passwordReset1.getExpiryDate().getTime()) / 1000 > 120) {
-                Mail.sendPasswordResetValidationCode(mailSender, validationCode, user.getEmailAddress());
+                //Mail.sendPasswordResetValidationCode(mailSender, validationCode, user.getEmailAddress());
                 return service.createPasswordResetTokenForUser(user, validationCode, tokenPass);
             }
         } else {
-            Mail.sendPasswordResetValidationCode(mailSender, validationCode, user.getEmailAddress());
+            //Mail.sendPasswordResetValidationCode(mailSender, validationCode, user.getEmailAddress());
             return service.createPasswordResetTokenForUser(user, validationCode, tokenPass);
         }
         return false;

@@ -1,12 +1,13 @@
 package com.fayardev.regms.controllers;
 
 import com.fayardev.regms.controllers.abstracts.IAuthController;
-import com.fayardev.regms.dtos.UserDto;
+import com.fayardev.regms.dtos.AuthUserDto;
 import com.fayardev.regms.entities.User;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.validates.UserValidate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +29,13 @@ public final class AuthController extends BaseController implements IAuthControl
 
     @Override
     @PostMapping("/sign-up")
-    public boolean signUp(@RequestBody UserDto userDto) throws Exception {
-        if (!UserValidate.passwordLengthValidate(userDto.getHashPassword())) {
-            if (!UserValidate.passwordValidate(userDto.getHashPassword())) {
-                return false;
+    public ResponseEntity<Object> signUp(@RequestBody AuthUserDto userDto) throws Exception {
+        if (!UserValidate.passwordLengthValidate(userDto.getPassword())) {
+            if (!UserValidate.passwordValidate(userDto.getPassword())) {
+                return ResponseEntity.ok(false);
             }
         }
-        userDto.setHashPassword(bCryptPasswordEncoder.encode(userDto.getHashPassword()));
-        return userService.add(modelMapper.map(userDto, User.class));
+        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        return ResponseEntity.ok(userService.add(modelMapper.map(userDto, User.class)));
     }
 }

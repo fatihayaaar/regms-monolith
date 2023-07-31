@@ -30,12 +30,15 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
         if (!ProfileValidate.profileValidate(entity)) {
             return false;
         }
-        var avatarBase64 = entity.getAvatarPath();
-        var avatarPath = IDGenerator.mediaNameIDGenerator(IDGenerator.AVATAR);
-        entity.setAvatarPath(avatarPath);
+        if (getEntityByUser(entity.getUser()).getID() == -1) {
+            var avatarBase64 = entity.getAvatarPath();
+            var avatarPath = IDGenerator.mediaNameIDGenerator(IDGenerator.AVATAR);
+            entity.setAvatarPath(avatarPath);
 
-        FileServer.uploadAvatar(avatarBase64, avatarPath);
-        return repository.add(entity);
+            FileServer.uploadAvatar(avatarBase64, avatarPath);
+            return repository.add(entity);
+        }
+        return false;
     }
 
     @Override

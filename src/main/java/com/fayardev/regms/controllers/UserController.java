@@ -5,6 +5,9 @@ import com.fayardev.regms.entities.User;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.util.HeaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,54 +26,60 @@ public final class UserController extends BaseController implements IUserControl
 
     @Override
     @PostMapping("/change")
-    public boolean change(HttpServletRequest request, @RequestParam String type, @RequestParam String val) throws Exception {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
-            return false;
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> change(Authentication authentication, @RequestParam String type, @RequestParam String val) throws Exception {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
+            return ResponseEntity.ok(false);
         }
         if (type == null) {
-            return false;
+            return ResponseEntity.ok(false);
         }
         if (val == null) {
-            return false;
+            return ResponseEntity.ok(false);
         }
 
+        User userEntity = (User) user;
         switch (type) {
             case "username" -> {
-                user.setUsername(val);
-                return userService.changeUsername(user);
+                userEntity.setUsername(val);
+                return ResponseEntity.ok(userService.changeUsername(userEntity));
             }
             case "emailAddress" -> {
-                user.setEmailAddress(val);
-                return userService.changeEmailAddress(user);
+                userEntity.setEmailAddress(val);
+                return ResponseEntity.ok(userService.changeEmailAddress(userEntity));
             }
             case "phoneNo" -> {
-                user.setPhoneNo(val);
-                return userService.changePhoneNo(user);
+                userEntity.setPhoneNo(val);
+                return ResponseEntity.ok(userService.changePhoneNo(userEntity));
             }
         }
-        return false;
+
+        return ResponseEntity.ok(false);
     }
 
     @Override
     @PostMapping("/freeze")
-    public boolean freeze(HttpServletRequest request) throws Exception {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
-            return false;
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> freeze(Authentication authentication) throws Exception {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
+            return ResponseEntity.ok(false);
         }
-        return userService.freeze(user);
+        return ResponseEntity.ok(userService.freeze((User) user));
     }
 
     @Override
     @PostMapping("/update")
-    public boolean update(@RequestBody User user) throws Exception {
-        return false;
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> update(Authentication authentication, @RequestBody User user) throws Exception {
+        return ResponseEntity.ok().build();
     }
 
     @Override
     @PostMapping("/delete")
-    public boolean delete(@RequestBody int id) throws Exception {
-        return userService.delete(id);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Boolean> delete(Authentication authentication, @RequestBody int id) throws Exception {
+        return ResponseEntity.ok(userService.delete(id));
     }
 }

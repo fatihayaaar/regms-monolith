@@ -11,9 +11,13 @@ import com.fayardev.regms.exceptions.enums.Errors;
 import com.fayardev.regms.services.ProfileService;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.util.HeaderUtil;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.json.JSONException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,106 +40,115 @@ public final class ProfileController extends BaseController implements IProfileC
     }
 
     @Override
-    @GetMapping("/add")
-    public Object addProfile(HttpServletRequest request, @RequestBody ProfileDto profileDto) throws Exception {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
-            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> addProfile(Authentication authentication, @RequestBody ProfileDto profileDto) throws Exception {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
+            return ResponseEntity.notFound().build();
         }
         Profile profile = modelMapper.map(profileDto, Profile.class);
-        profile.setUser(user);
-        return profileService.add(profile);
+        profile.setUser((User) user);
+        return ResponseEntity.ok(profileService.add(profile));
     }
 
     @Override
     @GetMapping("/my-profile")
-    public ProfileDto getMyProfile(HttpServletRequest request) throws Exception {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
-            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ProfileDto> getMyProfile(Authentication authentication) throws Exception {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
+            ResponseEntity.notFound().build();
         }
-        return modelMapper.map(profileService.getEntityByUser(user), ProfileDto.class);
+        return ResponseEntity.ok(modelMapper.map(profileService.getEntityByUser((User) user), ProfileDto.class));
     }
 
     @Override
     @PostMapping("/change-about-me")
-    public boolean changeAboutMe(HttpServletRequest request, @RequestBody String aboutMe) throws Exception {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> changeAboutMe(Authentication authentication, @RequestBody String aboutMe) throws Exception {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
-        var profile = profileService.getEntityByUser(user);
+        var profile = profileService.getEntityByUser((User) user);
         ((Profile) profile).setAboutMe(aboutMe);
 
-        return profileService.changeAboutMe((Profile) profile);
+        return ResponseEntity.ok(profileService.changeAboutMe((Profile) profile));
     }
 
     @Override
     @PostMapping("/update-avatar")
-    public boolean updateAvatar(HttpServletRequest request, @RequestBody String base64) throws Exception {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> updateAvatar(Authentication authentication, @RequestBody String base64) throws Exception {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
-        var profile = profileService.getEntityByUser(user);
+        var profile = profileService.getEntityByUser((User) user);
         ((Profile) profile).setAvatarPath(base64);
 
-        return profileService.updateAvatar((Profile) profile);
+        return ResponseEntity.ok(profileService.updateAvatar((Profile) profile));
     }
 
     @Override
     @PostMapping("/delete-avatar")
-    public boolean deleteAvatar(HttpServletRequest request) throws Exception {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> deleteAvatar(Authentication authentication) throws Exception {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
-        return profileService.deleteAvatar((Profile) profileService.getEntityByUser(user));
+        return ResponseEntity.ok(profileService.deleteAvatar((Profile) profileService.getEntityByUser((User) user)));
     }
 
     @Override
     @GetMapping("/{username}")
-    public Object getProfile(HttpServletRequest request, @PathVariable String username, @RequestParam String type) throws JSONException, UserException {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Object> getProfile(Authentication authentication, @PathVariable String username, @RequestParam String type) throws JSONException, UserException {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         BaseEntity theUser = userService.getEntityByUsername(username);
         if (theUser.getID() == -1) {
-            return false;
+            return ResponseEntity.notFound().build();
         }
         BaseEntity theProfile = profileService.getEntityByUser((User) theUser);
         if (theProfile.getID() == -1) {
-            return false;
+            return ResponseEntity.notFound().build();
         }
         if (type.equals("mini")) {
             OtherUserMiniDto otherUserMiniDto = modelMapper.map(theUser, OtherUserMiniDto.class);
             OtherProfileMiniDto otherProfileMiniDto = modelMapper.map(theProfile, OtherProfileMiniDto.class);
             otherProfileMiniDto.setOtherUserMiniDto(otherUserMiniDto);
-            return otherProfileMiniDto;
+            return ResponseEntity.ok(otherProfileMiniDto);
         }
         OtherUserDto otherUserDto = modelMapper.map(theUser, OtherUserDto.class);
         OtherProfileDto otherProfileDto = modelMapper.map(theProfile, OtherProfileDto.class);
         otherProfileDto.setOtherUserDto(otherUserDto);
 
-        return otherProfileDto;
+        return ResponseEntity.ok(otherProfileDto);
     }
 
     @Override
     @PostMapping("/timeline-get-profile")
-    public Object timelineGetProfile(HttpServletRequest request, @RequestBody Map<String, Object> map) throws Exception {
-        return null;
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Object> timelineGetProfile(Authentication authentication, @RequestBody Map<String, Object> map) throws Exception {
+        return ResponseEntity.ok().build();
     }
 
     @Override
     @PostMapping("/timeline")
-    public Object timeline(HttpServletRequest request, @RequestBody Map<String, Object> map) throws Exception {
-        return null;
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Object> timeline(Authentication authentication, @RequestBody Map<String, Object> map) throws Exception {
+        return ResponseEntity.ok().build();
     }
 
     @Override
     @PostMapping("/search")
-    public Object search(HttpServletRequest request, @RequestBody Map<String, Object> map) throws JSONException {
-        return null;
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Object> search(Authentication authentication, @RequestBody Map<String, Object> map) throws JSONException {
+        return ResponseEntity.ok().build();
     }
 }

@@ -78,7 +78,7 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
     public boolean changeUserPassword(User user, String password, String token) throws Exception {
         PasswordReset passwordReset = (PasswordReset) getTokenByPasswordToken(token);
         if (passwordReset.isActiveTokenPassword() && (new Date().getTime() - passwordReset.getExpiryDate().getTime()) / 100 <= PasswordReset.TOKEN_EXPIRATION) {
-            user.setHashPassword(bCryptPasswordEncoder.encode(password));
+            user.setPassword(bCryptPasswordEncoder.encode(password));
             this.activePasswordToken(passwordReset);
             return this.userRepository.update(user);
         }

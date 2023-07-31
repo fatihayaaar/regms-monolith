@@ -15,7 +15,10 @@ import com.fayardev.regms.validates.UserValidate;
 import org.json.JSONException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,83 +46,85 @@ public final class PasswordController extends BaseController implements IPasswor
 
     @Override
     @PostMapping("/check-valid-password")
-    public boolean checkIfValidOldPassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws JSONException {
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
-            return false;
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> checkIfValidOldPassword(Authentication authentication, @RequestBody PasswordDto passwordDto) throws JSONException {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (user.getID() == -1) {
+            return ResponseEntity.ok(false);
         }
-        return bCryptPasswordEncoder.matches(passwordDto.getOldPassword(), user.getHashPassword());
+        return ResponseEntity.ok(bCryptPasswordEncoder.matches(passwordDto.getOldPassword(), ((User) user).getPassword()));
     }
 
     @Override
     @PostMapping("/forgot-password")
-    public boolean forgotPassword(@RequestBody PasswordDto passwordDto) throws Exception {
+    public ResponseEntity<Boolean> forgotPassword(@RequestBody PasswordDto passwordDto) throws Exception {
         var user = userService.getEntityByEmail(passwordDto.getEmailAddress());
-        if (user == null) {
-            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+        if (user.getID() == -1) {
+            return ResponseEntity.notFound().build();
         }
-        return ValidationToken.getInstance().sendForgotPasswordValidationCode(mailSender, service, (User) user);
+        return ResponseEntity.ok(ValidationToken.getInstance().sendForgotPasswordValidationCode(mailSender, service, (User) user));
     }
 
     @Override
     @PostMapping("/change-password-with-token")
-    public boolean changePasswordWithToken(@RequestBody PasswordDto passwordDto) throws Exception {
+    public ResponseEntity<Boolean> changePasswordWithToken(@RequestBody PasswordDto passwordDto) throws Exception {
         if (!UserValidate.passwordLengthValidate(passwordDto.getNewPassword())) {
             if (!UserValidate.passwordValidate(passwordDto.getNewPassword())) {
-                return false;
+                return ResponseEntity.ok(false);
             }
         }
         var password = passwordDto.getNewPassword();
         var token = passwordDto.getToken();
         if (token == null) {
-            return false;
+            return ResponseEntity.ok(false);
         }
         var user = service.getUserByTokenPassword(passwordDto.getToken());
         if (user.getID() == -1) {
-            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+            return ResponseEntity.notFound().build();
         }
-        return service.changeUserPassword((User) user, password, token);
+        return ResponseEntity.ok(service.changeUserPassword((User) user, password, token));
     }
 
     @Override
     @PostMapping("/get-password-forgot-token")
-    public String getPasswordForgotToken(@RequestBody PasswordDto passwordDto) throws Exception {
+    public ResponseEntity<String> getPasswordForgotToken(@RequestBody PasswordDto passwordDto) throws Exception {
         var user = userService.getEntityByEmail(passwordDto.getEmailAddress());
-        if (user == null) {
-            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+        if (user.getID() == -1) {
+            return ResponseEntity.notFound().build();
         }
         PasswordReset passwordReset = (PasswordReset) service.getPassTokenByEmail(passwordDto.getEmailAddress());
         service.numberOfInteractionsInc(passwordReset);
 
         String result = service.validatePasswordValidateCode(passwordDto.getValidateCode(), ((User) user).getEmailAddress());
         if (result == null) {
-            return "expired";
+            return ResponseEntity.ok("expired");
         }
 
         //passwordReset = (PasswordReset) service.getUserByTokenPassword(passwordDto.getToken());
         if (passwordReset.isActive()) {
             service.activeCompPassToken(passwordReset);
-            return passwordReset.getTokenPassword();
+            return ResponseEntity.ok(passwordReset.getTokenPassword());
         }
-        return "expired";
+        return ResponseEntity.ok("expired");
     }
 
     @Override
     @PostMapping("/change-password")
-    public boolean changePassword(HttpServletRequest request, @RequestBody PasswordDto passwordDto) throws Exception {
-        if (!checkIfValidOldPassword(request, passwordDto)) {
-            return false;
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Boolean> changePassword(Authentication authentication, @RequestBody PasswordDto passwordDto) throws Exception {
+        var user = userService.getEntityByUsername(authentication.getName());
+        if (!checkIfValidOldPassword(authentication, passwordDto).hasBody()) {
+            return ResponseEntity.ok(false);
         }
-        var user = userService.getEntityById(Integer.parseInt(HeaderUtil.getTokenPayloadID(request)));
-        if (user == null) {
-            return false;
+        if (user.getID() == -1) {
+            return ResponseEntity.notFound().build();
         }
         if (!UserValidate.passwordLengthValidate(passwordDto.getNewPassword())) {
             if (!UserValidate.passwordValidate(passwordDto.getNewPassword())) {
-                return false;
+                return ResponseEntity.ok(false);
             }
         }
-        user.setHashPassword(bCryptPasswordEncoder.encode(passwordDto.getNewPassword()));
-        return userService.update(user);
+        ((User) user).setPassword(bCryptPasswordEncoder.encode(passwordDto.getNewPassword()));
+        return ResponseEntity.ok(userService.update((User) user));
     }
 }

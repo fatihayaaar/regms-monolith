@@ -2,12 +2,13 @@ package com.fayardev.regms.dtos;
 
 import java.util.Date;
 
-public class UserDto {
+public class AuthUserDto {
 
     private String username;
     private String emailAddress;
     private String phoneNo;
 
+    private String password;
     private String sex;
     private Date birthDate;
     private Date createDate;
@@ -69,6 +70,14 @@ public class UserDto {
 
     public void setPhoneNo(String phoneNo) {
         this.phoneNo = phoneNo;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getSex() {
