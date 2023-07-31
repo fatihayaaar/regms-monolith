@@ -13,13 +13,13 @@ import org.springframework.context.annotation.Configuration;
 public class RepositoryAOP implements IRepositoryAOP {
 
     @Override
-    @Before("execution(* com.fayardev.regms.repositories.abstracts.IRepository.*(..))")
+    @Before("execution(* com.fayardev.regms.repositories.BaseRepository.*(..))")
     public void before(JoinPoint joinPoint) {
         RepositoryLogging.logBefore(joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
     @Override
-    @After("execution(* com.fayardev.regms.repositories.abstracts.IRepository.*(..))")
+    @After("execution(* com.fayardev.regms.repositories.BaseRepository.*(..))")
     public void after(JoinPoint joinPoint) {
     }
 }

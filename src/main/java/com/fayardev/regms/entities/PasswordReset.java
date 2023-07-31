@@ -17,7 +17,7 @@ public final class PasswordReset extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "validatecode")
     private String validateCode;
@@ -93,11 +93,11 @@ public final class PasswordReset extends BaseEntity {
         isActive = active;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

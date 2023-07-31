@@ -26,5 +26,5 @@ public interface IUserController {
 
     @PostMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    ResponseEntity<Boolean> delete(Authentication authentication, @RequestBody int id) throws Exception;
+    ResponseEntity<Boolean> delete(Authentication authentication, @RequestBody Long id) throws Exception;
 }

@@ -10,8 +10,6 @@ import com.fayardev.regms.exceptions.enums.ErrorComponents;
 import com.fayardev.regms.exceptions.enums.Errors;
 import com.fayardev.regms.services.ProfileService;
 import com.fayardev.regms.services.UserService;
-import com.fayardev.regms.util.HeaderUtil;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.json.JSONException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -44,12 +41,12 @@ public final class ProfileController extends BaseController implements IProfileC
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> addProfile(Authentication authentication, @RequestBody ProfileDto profileDto) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
         Profile profile = modelMapper.map(profileDto, Profile.class);
         profile.setUser((User) user);
-        return ResponseEntity.ok(profileService.add(profile));
+        return ResponseEntity.ok(profileService.saveEntity(profile));
     }
 
     @Override
@@ -57,8 +54,8 @@ public final class ProfileController extends BaseController implements IProfileC
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ProfileDto> getMyProfile(Authentication authentication) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
-            ResponseEntity.notFound().build();
+        if (user == null) {
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(modelMapper.map(profileService.getEntityByUser((User) user), ProfileDto.class));
     }
@@ -68,8 +65,8 @@ public final class ProfileController extends BaseController implements IProfileC
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> changeAboutMe(Authentication authentication, @RequestBody String aboutMe) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
-            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
         }
         var profile = profileService.getEntityByUser((User) user);
         ((Profile) profile).setAboutMe(aboutMe);
@@ -82,8 +79,8 @@ public final class ProfileController extends BaseController implements IProfileC
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> updateAvatar(Authentication authentication, @RequestBody String base64) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
-            throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
         }
         var profile = profileService.getEntityByUser((User) user);
         ((Profile) profile).setAvatarPath(base64);
@@ -96,7 +93,7 @@ public final class ProfileController extends BaseController implements IProfileC
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> deleteAvatar(Authentication authentication) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
+        if (user == null) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         return ResponseEntity.ok(profileService.deleteAvatar((Profile) profileService.getEntityByUser((User) user)));
@@ -107,15 +104,15 @@ public final class ProfileController extends BaseController implements IProfileC
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Object> getProfile(Authentication authentication, @PathVariable String username, @RequestParam String type) throws JSONException, UserException {
         var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
+        if (user == null) {
             throw new UserException("User Null", Errors.NULL, ErrorComponents.USER);
         }
         BaseEntity theUser = userService.getEntityByUsername(username);
-        if (theUser.getID() == -1) {
+        if (theUser == null) {
             return ResponseEntity.notFound().build();
         }
         BaseEntity theProfile = profileService.getEntityByUser((User) theUser);
-        if (theProfile.getID() == -1) {
+        if (theProfile == null) {
             return ResponseEntity.notFound().build();
         }
         if (type.equals("mini")) {

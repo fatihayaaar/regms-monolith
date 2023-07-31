@@ -49,7 +49,7 @@ public final class PasswordController extends BaseController implements IPasswor
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> checkIfValidOldPassword(Authentication authentication, @RequestBody PasswordDto passwordDto) throws JSONException {
         var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
+        if (user == null) {
             return ResponseEntity.ok(false);
         }
         return ResponseEntity.ok(bCryptPasswordEncoder.matches(passwordDto.getOldPassword(), ((User) user).getPassword()));
@@ -59,7 +59,7 @@ public final class PasswordController extends BaseController implements IPasswor
     @PostMapping("/forgot-password")
     public ResponseEntity<Boolean> forgotPassword(@RequestBody PasswordDto passwordDto) throws Exception {
         var user = userService.getEntityByEmail(passwordDto.getEmailAddress());
-        if (user.getID() == -1) {
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(ValidationToken.getInstance().sendForgotPasswordValidationCode(mailSender, service, (User) user));
@@ -79,7 +79,7 @@ public final class PasswordController extends BaseController implements IPasswor
             return ResponseEntity.ok(false);
         }
         var user = service.getUserByTokenPassword(passwordDto.getToken());
-        if (user.getID() == -1) {
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(service.changeUserPassword((User) user, password, token));
@@ -89,7 +89,7 @@ public final class PasswordController extends BaseController implements IPasswor
     @PostMapping("/get-password-forgot-token")
     public ResponseEntity<String> getPasswordForgotToken(@RequestBody PasswordDto passwordDto) throws Exception {
         var user = userService.getEntityByEmail(passwordDto.getEmailAddress());
-        if (user.getID() == -1) {
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
         PasswordReset passwordReset = (PasswordReset) service.getPassTokenByEmail(passwordDto.getEmailAddress());
@@ -116,7 +116,7 @@ public final class PasswordController extends BaseController implements IPasswor
         if (!checkIfValidOldPassword(authentication, passwordDto).hasBody()) {
             return ResponseEntity.ok(false);
         }
-        if (user.getID() == -1) {
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
         if (!UserValidate.passwordLengthValidate(passwordDto.getNewPassword())) {

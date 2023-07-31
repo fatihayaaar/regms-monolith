@@ -30,7 +30,7 @@ public final class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private int ID;
+    private Long ID;
 
     @Column(name = "username", nullable = false, length = USERNAME_MAX_LENGTH, unique = true)
     private String username;
@@ -74,11 +74,12 @@ public final class User extends BaseEntity {
         super();
     }
 
-    public int getID() {
+    @Override
+    public Long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

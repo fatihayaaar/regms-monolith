@@ -15,7 +15,7 @@ public final class Profile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private int ID;
+    private Long ID;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "userid", nullable = false)
@@ -44,11 +44,11 @@ public final class Profile extends BaseEntity {
     }
 
     @Override
-    public int getID() {
+    public Long getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(Long ID) {
         this.ID = ID;
     }
 

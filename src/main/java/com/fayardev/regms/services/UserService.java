@@ -9,14 +9,19 @@ import com.fayardev.regms.repositories.UserRepository;
 import com.fayardev.regms.services.abstracts.IUserService;
 import com.fayardev.regms.validates.UserValidate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 @Service
-public class UserService extends BaseService<User> implements IUserService<User> {
+public class UserService extends BaseService<User> implements IUserService<User>, UserDetailsService {
 
     private final UserRepository repository;
 
@@ -27,7 +32,7 @@ public class UserService extends BaseService<User> implements IUserService<User>
 
     @Override
     @Transactional
-    public boolean add(User entity) throws Exception {
+    public boolean saveEntity(User entity) throws Exception {
         entity.setUsername(entity.getUsername().trim().toLowerCase());
         if (!UserValidate.userValidate(entity)) {
             return false;
@@ -39,20 +44,31 @@ public class UserService extends BaseService<User> implements IUserService<User>
         entity.setActive(true);
         entity.setConfirm(false);
         entity.setVerified(false);
-        return repository.add(entity);
+        repository.save(entity);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User applicationUser = repository.getUserByUsername(username);
+        if (applicationUser == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return new org.springframework.security.core.userdetails.User(applicationUser.getUsername(), applicationUser.getPassword(), emptyList());
     }
 
     private boolean emailControl(User user) throws UserException {
-        BaseEntity userLocal = repository.getEntityByEmail(user.getEmailAddress());
-        if (userLocal.getID() != -1) {
+        BaseEntity userLocal = repository.getUserByEmailAddress(user.getEmailAddress());
+        if (userLocal != null) {
             return UserValidate.emailEquals(user.getEmailAddress(), ((User) userLocal).getEmailAddress(), ErrorComponents.EMAIL);
         }
         return true;
     }
 
     private boolean usernameControl(User user) throws UserException {
-        BaseEntity userLocal = repository.getEntityByUsername(user.getUsername());
-        if (userLocal.getID() != -1) {
+        BaseEntity userLocal = repository.getUserByUsername(user.getUsername());
+        if (userLocal != null) {
             return UserValidate.usernameEquals(user.getUsername(), ((User) userLocal).getUsername(), ErrorComponents.USERNAME);
         }
         return true;
@@ -60,44 +76,46 @@ public class UserService extends BaseService<User> implements IUserService<User>
 
     @Override
     @Transactional
-    public boolean delete(int id) throws Exception {
-        return repository.delete(id);
+    public boolean delete(Long id) throws Exception {
+        repository.deleteById(id);
+        return true;
     }
 
     @Override
     @Transactional
     public boolean update(User entity) throws UserException {
-        return repository.update(entity);
+        repository.save(entity);
+        return true;
     }
 
     @Override
     @Transactional
-    public User getEntityById(int id) {
-        return repository.getEntityById(id);
+    public User getEntityById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
     @Override
     @Transactional
     public List<User> getEntities() {
-        return repository.getEntities();
+        return repository.findAll();
     }
 
     @Override
     @Transactional
     public BaseEntity getEntityByEmail(String email) {
-        return repository.getEntityByEmail(email);
+        return repository.getUserByEmailAddress(email);
     }
 
     @Override
     @Transactional
     public BaseEntity getEntityByUsername(String username) {
-        return repository.getEntityByUsername(username);
+        return repository.getUserByUsername(username);
     }
 
     @Override
     @Transactional
     public BaseEntity getEntityByPhoneNo(String phoneNo) {
-        return repository.getEntityByPhoneNo(phoneNo);
+        return repository.getUserByPhoneNo(phoneNo);
     }
 
     @Override

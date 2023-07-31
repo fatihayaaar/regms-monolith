@@ -36,6 +36,6 @@ public final class AuthController extends BaseController implements IAuthControl
             }
         }
         userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-        return ResponseEntity.ok(userService.add(modelMapper.map(userDto, User.class)));
+        return ResponseEntity.ok(userService.saveEntity(modelMapper.map(userDto, User.class)));
     }
 }

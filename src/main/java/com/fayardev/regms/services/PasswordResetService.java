@@ -31,25 +31,27 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
 
     @Override
     @Transactional
-    public boolean add(PasswordReset entity) throws Exception {
-        return repository.add(entity);
+    public boolean saveEntity(PasswordReset entity) throws Exception {
+        repository.save(entity);
+        return true;
     }
 
     @Override
     @Transactional
-    public boolean delete(int id) throws Exception {
+    public boolean delete(Long id) throws Exception {
         return false;
     }
 
     @Override
     @Transactional
     public boolean update(PasswordReset entity) throws Exception {
-        return repository.update(entity);
+        repository.save(entity);
+        return true;
     }
 
     @Override
     @Transactional
-    public PasswordReset getEntityById(int id) {
+    public PasswordReset getEntityById(Long id) {
         return null;
     }
 
@@ -70,7 +72,7 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
         myToken.setTokenPassword(passwordToken);
         myToken.setActiveTokenPassword(true);
 
-        return this.add(myToken);
+        return this.saveEntity(myToken);
     }
 
     @Override
@@ -80,7 +82,8 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
         if (passwordReset.isActiveTokenPassword() && (new Date().getTime() - passwordReset.getExpiryDate().getTime()) / 100 <= PasswordReset.TOKEN_EXPIRATION) {
             user.setPassword(bCryptPasswordEncoder.encode(password));
             this.activePasswordToken(passwordReset);
-            return this.userRepository.update(user);
+            this.userRepository.save(user);
+            return true;
         }
         return false;
     }
@@ -122,17 +125,17 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
     @Override
     @Transactional
     public BaseEntity getUserByTokenPassword(String token) {
-        BaseEntity entity = repository.findByPasswordToken(token);
+        BaseEntity entity = repository.findByTokenPassword(token);
         if (entity.getID() == -1) {
             return new BlankEntity();
         }
-        return userRepository.getEntityById(((PasswordReset) entity).getUser().getID());
+        return userRepository.findById(((PasswordReset) entity).getUser().getID()).orElse(null);
     }
 
     @Override
     @Transactional
     public BaseEntity getTokenByPasswordToken(String token) {
-        return repository.findByPasswordToken(token);
+        return repository.findByTokenPassword(token);
     }
 
     @Override

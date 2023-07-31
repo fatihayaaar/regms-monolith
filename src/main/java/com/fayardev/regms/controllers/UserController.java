@@ -28,8 +28,8 @@ public final class UserController extends BaseController implements IUserControl
     @PostMapping("/change")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> change(Authentication authentication, @RequestParam String type, @RequestParam String val) throws Exception {
-        var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
+        User user = (User) userService.getEntityByUsername(authentication.getName());
+        if (user == null) {
             return ResponseEntity.ok(false);
         }
         if (type == null) {
@@ -38,20 +38,18 @@ public final class UserController extends BaseController implements IUserControl
         if (val == null) {
             return ResponseEntity.ok(false);
         }
-
-        User userEntity = (User) user;
         switch (type) {
             case "username" -> {
-                userEntity.setUsername(val);
-                return ResponseEntity.ok(userService.changeUsername(userEntity));
+                user.setUsername(val);
+                return ResponseEntity.ok(userService.changeUsername(user));
             }
             case "emailAddress" -> {
-                userEntity.setEmailAddress(val);
-                return ResponseEntity.ok(userService.changeEmailAddress(userEntity));
+                user.setEmailAddress(val);
+                return ResponseEntity.ok(userService.changeEmailAddress(user));
             }
             case "phoneNo" -> {
-                userEntity.setPhoneNo(val);
-                return ResponseEntity.ok(userService.changePhoneNo(userEntity));
+                user.setPhoneNo(val);
+                return ResponseEntity.ok(userService.changePhoneNo(user));
             }
         }
 
@@ -63,7 +61,7 @@ public final class UserController extends BaseController implements IUserControl
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> freeze(Authentication authentication) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
-        if (user.getID() == -1) {
+        if (user == null) {
             return ResponseEntity.ok(false);
         }
         return ResponseEntity.ok(userService.freeze((User) user));
@@ -79,7 +77,7 @@ public final class UserController extends BaseController implements IUserControl
     @Override
     @PostMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Boolean> delete(Authentication authentication, @RequestBody int id) throws Exception {
+    public ResponseEntity<Boolean> delete(Authentication authentication, @RequestBody Long id) throws Exception {
         return ResponseEntity.ok(userService.delete(id));
     }
 }

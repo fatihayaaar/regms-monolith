@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 public abstract class BaseEntity implements Serializable {
 
-    protected int ID;
+    protected Long ID;
 
     protected BaseEntity() {
         super();
     }
 
-    public int getID() {
+    public Long getID() {
         return this.ID;
     }
 

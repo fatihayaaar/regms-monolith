@@ -26,25 +26,27 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
 
     @Override
     @Transactional
-    public boolean add(Profile entity) throws Exception {
+    public boolean saveEntity(Profile entity) throws Exception {
         if (!ProfileValidate.profileValidate(entity)) {
             return false;
         }
-        if (getEntityByUser(entity.getUser()).getID() == -1) {
+        if (getEntityByUser(entity.getUser()) == null) {
             var avatarBase64 = entity.getAvatarPath();
             var avatarPath = IDGenerator.mediaNameIDGenerator(IDGenerator.AVATAR);
             entity.setAvatarPath(avatarPath);
 
             FileServer.uploadAvatar(avatarBase64, avatarPath);
-            return repository.add(entity);
+            repository.save(entity);
+            return true;
         }
         return false;
     }
 
     @Override
     @Transactional
-    public boolean delete(int id) throws Exception {
-        return repository.delete(id);
+    public boolean delete(Long id) throws Exception {
+        repository.deleteById(id);
+        return true;
     }
 
     @Override
@@ -53,25 +55,26 @@ public class ProfileService extends BaseService<Profile> implements IProfileServ
         if (!ProfileValidate.profileValidate(entity)) {
             return false;
         }
-        return repository.update(entity);
+        repository.save(entity);
+        return true;
     }
 
     @Override
     @Transactional
-    public Profile getEntityById(int id) {
-        return repository.getEntityById(id);
+    public Profile getEntityById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
     @Override
     @Transactional
     public List<Profile> getEntities() {
-        return repository.getEntities();
+        return repository.findAll();
     }
 
     @Override
     @Transactional
     public BaseEntity getEntityByUser(User user) {
-        return repository.getEntityByUser(user);
+        return repository.getProfileByUser(user);
     }
 
     @Override
