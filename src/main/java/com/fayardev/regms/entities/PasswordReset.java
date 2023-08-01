@@ -5,9 +5,7 @@ import java.util.Date;
 
 @Entity
 @NamedQueries(value = {
-        @NamedQuery(name = "PasswordReset.findByValidateCode", query = "SELECT pr FROM PasswordReset pr WHERE pr.validateCode=:validateCode"),
         @NamedQuery(name = "PasswordReset.findByEmail", query = "SELECT pr FROM PasswordReset pr WHERE pr.emailAddress=:emailAddress and pr.isActive=true order by pr.expiryDate desc "),
-        @NamedQuery(name = "PasswordReset.findByTokenPassword", query = "SELECT pr FROM PasswordReset pr WHERE pr.tokenPassword=:tokenPassword"),
 })
 @Table(name = "passwordreset")
 public final class PasswordReset extends BaseEntity {

@@ -4,9 +4,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "profile")
-@NamedQueries({
-        @NamedQuery(name = "Profile.findByUser", query = "SELECT p FROM Profile p WHERE p.user=:user"),
-})
 public final class Profile extends BaseEntity {
 
     public static final int MAX_ABOUT_ME_LENGTH = 300;
