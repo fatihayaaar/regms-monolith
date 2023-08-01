@@ -59,17 +59,17 @@ public class UserService extends BaseService<User> implements IUserService<User>
     }
 
     private boolean emailControl(User user) throws UserException {
-        BaseEntity userLocal = repository.getUserByEmailAddress(user.getEmailAddress());
+        User userLocal = repository.getUserByEmailAddress(user.getEmailAddress());
         if (userLocal != null) {
-            return UserValidate.emailEquals(user.getEmailAddress(), ((User) userLocal).getEmailAddress(), ErrorComponents.EMAIL);
+            return UserValidate.emailEquals(user.getEmailAddress(), userLocal.getEmailAddress(), ErrorComponents.EMAIL);
         }
         return true;
     }
 
     private boolean usernameControl(User user) throws UserException {
-        BaseEntity userLocal = repository.getUserByUsername(user.getUsername());
+        User userLocal = repository.getUserByUsername(user.getUsername());
         if (userLocal != null) {
-            return UserValidate.usernameEquals(user.getUsername(), ((User) userLocal).getUsername(), ErrorComponents.USERNAME);
+            return UserValidate.usernameEquals(user.getUsername(), userLocal.getUsername(), ErrorComponents.USERNAME);
         }
         return true;
     }

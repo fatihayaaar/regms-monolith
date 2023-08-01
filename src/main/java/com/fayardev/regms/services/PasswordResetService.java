@@ -125,11 +125,11 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
     @Override
     @Transactional
     public BaseEntity getUserByTokenPassword(String token) {
-        BaseEntity entity = repository.findByTokenPassword(token);
+        PasswordReset entity = repository.findByTokenPassword(token);
         if (entity.getID() == -1) {
             return new BlankEntity();
         }
-        return userRepository.findById(((PasswordReset) entity).getUser().getID()).orElse(null);
+        return userRepository.findById(entity.getUser().getID()).orElse(null);
     }
 
     @Override
@@ -141,12 +141,12 @@ public class PasswordResetService extends BaseService<PasswordReset> implements 
     @Override
     @Transactional
     public String validatePasswordValidateCode(String validateCode, String email) {
-        final BaseEntity passToken = repository.findByValidateCode(validateCode);
+        final PasswordReset passToken = repository.findByValidateCode(validateCode);
         if (passToken.getID() == -1) return "expired";
 
-        return !isTokenExpired((PasswordReset) passToken) ? "expired"
-                : !((PasswordReset) passToken).getEmailAddress().equals(email) ? "expired"
-                : !((PasswordReset) passToken).isActive() ? "expired"
+        return !isTokenExpired(passToken) ? "expired"
+                : !passToken.getEmailAddress().equals(email) ? "expired"
+                : !passToken.isActive() ? "expired"
                 : null;
     }
 
