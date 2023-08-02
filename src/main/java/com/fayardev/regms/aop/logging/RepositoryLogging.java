@@ -10,11 +10,11 @@ public class RepositoryLogging {
 
     private static void entityLog(String methodName, BaseEntity entity) {
         if (entity instanceof User user) {
-            //log.info(methodName + "() to: " + user);
+            log.info(methodName + "() to: " + user);
         } else if (entity instanceof Profile profile) {
-            //log.info(methodName + "() to: " + profile);
+            log.info(methodName + "() to: " + profile);
         } else {
-            //log.info(methodName + "() to: " + entity);
+            log.info(methodName + "() to: " + entity);
         }
     }
 
@@ -22,12 +22,12 @@ public class RepositoryLogging {
         if (obj instanceof BaseEntity entity) {
             entityLog(methodName, entity);
         } else {
-            //log.info(methodName + "() to: " + obj);
+            log.info(methodName + "() to: " + obj);
         }
     }
 
     private static void arrayLog(String methodName, Object[] objects) {
-        //log.info(methodName + "() args: " + objects);
+        log.info(methodName + "() args: " + objects);
     }
 
     public static void logBefore(String methodName, Object[] objects) {
