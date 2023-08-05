@@ -3,16 +3,15 @@ package com.fayardev.regms.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "user")
 @JsonIgnoreProperties(allowSetters = true, value = {"password"})
-public final class User extends BaseEntity {
+public class User extends BaseEntity {
 
     public static final int PASSWORD_MIN_LENGTH = 8;
     public static final int PASSWORD_MAX_LENGTH = 32;

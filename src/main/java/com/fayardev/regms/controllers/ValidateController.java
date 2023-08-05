@@ -21,19 +21,19 @@ public final class ValidateController extends BaseController implements IValidat
     @Override
     @GetMapping("/username/{username}")
     public ResponseEntity<Boolean> isThereUsername(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getEntityByUsername(username).getID() != -1);
+        return ResponseEntity.ok(userService.getEntityByUsername(username) != null);
     }
 
     @Override
     @GetMapping("/email-address/{email}")
     public ResponseEntity<Boolean> isThereEmail(@PathVariable String email) {
-        return ResponseEntity.ok(userService.getEntityByEmail(email).getID() != -1);
+        return ResponseEntity.ok(userService.getEntityByEmail(email) != null);
     }
 
     @Override
     @GetMapping("/phoneNo/{phoneNo}")
     public ResponseEntity<Boolean> isTherePhoneNo(@PathVariable String phoneNo) {
-        return ResponseEntity.ok(userService.getEntityByPhoneNo(phoneNo).getID() != -1);
+        return ResponseEntity.ok(userService.getEntityByPhoneNo(phoneNo) != null);
     }
 
 }

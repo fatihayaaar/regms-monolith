@@ -1,6 +1,6 @@
 package com.fayardev.regms.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -8,7 +8,7 @@ import java.util.Date;
         @NamedQuery(name = "PasswordReset.findByEmail", query = "SELECT pr FROM PasswordReset pr WHERE pr.emailAddress=:emailAddress and pr.isActive=true order by pr.expiryDate desc "),
 })
 @Table(name = "passwordreset")
-public final class PasswordReset extends BaseEntity {
+public class PasswordReset extends BaseEntity {
 
     public static final int TOKEN_EXPIRATION = 60 * 2 * 60;
     public static final int EXPIRATION = 2;

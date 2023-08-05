@@ -5,6 +5,7 @@ import com.fayardev.regms.exceptions.UserException;
 import com.fayardev.regms.exceptions.errors.ApiError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -31,7 +32,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             HttpHeaders headers,
-            HttpStatus status,
+            HttpStatusCode status,
             WebRequest request) {
 
         List<String> errors = new ArrayList<>();
@@ -56,7 +57,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         ApiError apiError = new ApiError(
                 getTimeStamp(),

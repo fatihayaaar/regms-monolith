@@ -1,10 +1,10 @@
 package com.fayardev.regms.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "profile")
-public final class Profile extends BaseEntity {
+public class Profile extends BaseEntity {
 
     public static final int MAX_ABOUT_ME_LENGTH = 300;
     public static final int NAME_AND_SURNAME_MAX_LENGTH = 32;

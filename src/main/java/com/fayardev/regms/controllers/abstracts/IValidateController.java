@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 public interface IValidateController {
 
-    @GetMapping("/validate/username/{username}")
+    @GetMapping("/username/{username}")
     ResponseEntity<Boolean> isThereUsername(@PathVariable String username);
 
-    @GetMapping("/validate/email-address/{email}")
+    @GetMapping("/email-address/{email}")
     ResponseEntity<Boolean> isThereEmail(@PathVariable String email);
 
-    @GetMapping("/validate/phoneNo/{phoneNo}")
+    @GetMapping("/phoneNo/{phoneNo}")
     ResponseEntity<Boolean> isTherePhoneNo(@PathVariable String phoneNo);
 }
