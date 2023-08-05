@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface IAuthController {
 
-    @PostMapping("/sign-up")
     ResponseEntity<Object> signUp(@RequestBody AuthUserDto userDto) throws Exception;
 
 }
