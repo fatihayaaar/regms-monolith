@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Formula;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Entity
-@Table(name = "user")
 @JsonIgnoreProperties(allowSetters = true, value = {"password"})
 public class User extends BaseEntity {
 
@@ -23,45 +24,44 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
     private Long ID;
 
-    @Column(name = "username", nullable = false, length = USERNAME_MAX_LENGTH, unique = true)
+    @Column(nullable = false, length = USERNAME_MAX_LENGTH, unique = true)
     private String username;
 
-    @Column(name = "emailaddress", nullable = false, length = EMAIL_ADDRESS_MAX_LENGTH, unique = true)
+    @Column(nullable = false, length = EMAIL_ADDRESS_MAX_LENGTH, unique = true)
     private String emailAddress;
 
-    @Column(name = "phoneno", length = PHONE_NO_MAX_LENGTH, unique = true)
+    @Column(length = PHONE_NO_MAX_LENGTH, unique = true)
     private String phoneNo;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnore
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "sex", nullable = false, length = SEX_MAX_LENGTH)
+    @Column(nullable = false, length = SEX_MAX_LENGTH)
     private String sex;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "birthdate", nullable = false)
+    @Column(nullable = false)
     private Date birthDate;
 
-    @Column(name = "confirm", nullable = false)
+    @Column(nullable = false)
     private boolean confirm;
 
-    @Column(name = "verified", nullable = false)
+    @Column(nullable = false)
     private boolean verified;
 
-    @Column(name = "isactive", nullable = false)
+    @Column(nullable = false)
     private boolean isActive;
 
-    @Formula("YEAR(CURDATE()) - YEAR(birthdate)")
-    private String age;
-
     @Temporal(TemporalType.DATE)
-    @Column(name = "createdate", nullable = false)
+    @Column(nullable = false)
     private Date createDate;
+
+    @Transient
+    private Integer age;
 
     public User() {
         super();
@@ -92,12 +92,12 @@ public class User extends BaseEntity {
         this.emailAddress = emailAddress;
     }
 
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
+    public Integer getAge() {
+        if (birthDate != null) {
+            LocalDate currentDate = LocalDate.now();
+            return Period.between(birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), currentDate).getYears();
+        }
+        return null;
     }
 
     public String getPhoneNo() {

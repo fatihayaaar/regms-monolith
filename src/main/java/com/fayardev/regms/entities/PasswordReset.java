@@ -7,7 +7,6 @@ import java.util.Date;
 @NamedQueries(value = {
         @NamedQuery(name = "PasswordReset.findByEmail", query = "SELECT pr FROM PasswordReset pr WHERE pr.emailAddress=:emailAddress and pr.isActive=true order by pr.expiryDate desc "),
 })
-@Table(name = "passwordreset")
 public class PasswordReset extends BaseEntity {
 
     public static final int TOKEN_EXPIRATION = 60 * 2 * 60;
@@ -16,31 +15,17 @@ public class PasswordReset extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "validatecode")
     private String validateCode;
+    private String emailAddress;
+    private int numberOfInteractions;
+    private boolean isActive;
+    private Date expiryDate;
+    private String tokenPassword;
+    private boolean isActiveTokenPassword;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "userid")
+    @JoinColumn(nullable = false)
     private User user;
-
-    @Column(name = "emailaddres")
-    private String emailAddress;
-
-    @Column(name = "numberofinteractions")
-    private int numberOfInteractions;
-
-    @Column(name = "isactive")
-    private boolean isActive;
-
-    @Column(name = "expirydate")
-    private Date expiryDate;
-
-    @Column(name = "tokenpassword")
-    private String tokenPassword;
-
-    @Column(name = "isactivetokenpassword")
-    private boolean isActiveTokenPassword;
 
     public PasswordReset(String validateCode, User user) {
         this.validateCode = validateCode;

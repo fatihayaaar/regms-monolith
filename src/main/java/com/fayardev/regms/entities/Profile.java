@@ -3,7 +3,6 @@ package com.fayardev.regms.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "profile")
 public class Profile extends BaseEntity {
 
     public static final int MAX_ABOUT_ME_LENGTH = 300;
@@ -11,30 +10,26 @@ public class Profile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
     private Long ID;
 
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "userid", nullable = false)
-    private User user;
-
-    @Column(name = "nameandsurname", nullable = false, length = NAME_AND_SURNAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_AND_SURNAME_MAX_LENGTH)
     private String nameAndSurname;
 
-    @Column(name = "aboutme")
     private String aboutMe;
-
-    @Column(name = "avatar")
     private String avatarPath;
 
-    @Column(name = "privacy", nullable = false)
+    @Column(nullable = false)
     private boolean privacy;
 
-    @Column(name = "showprofile", nullable = false)
+    @Column(nullable = false)
     private boolean showProfile;
 
-    @Column(name = "isopennotification", nullable = false)
+    @Column(nullable = false)
     private boolean isOpenNotification;
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(nullable = false)
+    private User user;
 
     public Profile() {
         super();

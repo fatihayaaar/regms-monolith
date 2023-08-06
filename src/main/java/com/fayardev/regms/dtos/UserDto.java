@@ -7,7 +7,6 @@ public class UserDto extends BaseDto {
     private String username;
     private String emailAddress;
     private String phoneNo;
-
     private String sex;
     private Date birthDate;
     private Date createDate;

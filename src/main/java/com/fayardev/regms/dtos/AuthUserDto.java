@@ -9,7 +9,6 @@ public class AuthUserDto extends BaseDto {
     private String username;
     private String emailAddress;
     private String phoneNo;
-
     private String password;
     private String sex;
     private Date birthDate;
