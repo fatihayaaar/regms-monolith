@@ -3,7 +3,7 @@ package com.fayardev.regms.dtos;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
-public class AuthUserDto {
+public class AuthUserDto extends BaseDto {
 
     @NotEmpty(message = "Not Null")
     private String username;

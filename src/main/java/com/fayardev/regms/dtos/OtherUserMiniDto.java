@@ -1,6 +1,6 @@
 package com.fayardev.regms.dtos;
 
-public class OtherUserMiniDto {
+public class OtherUserMiniDto extends BaseDto {
 
     private String username;
 

@@ -3,12 +3,14 @@ package com.fayardev.regms.controllers;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class CustomErrorController implements ErrorController {
 
     @RequestMapping("/error")

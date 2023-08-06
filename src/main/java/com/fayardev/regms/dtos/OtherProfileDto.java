@@ -1,6 +1,6 @@
 package com.fayardev.regms.dtos;
 
-public class OtherProfileDto {
+public class OtherProfileDto extends BaseDto {
 
     private String nameAndSurname;
     private String aboutMe;

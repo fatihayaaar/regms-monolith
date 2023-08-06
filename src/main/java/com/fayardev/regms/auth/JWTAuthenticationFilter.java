@@ -16,6 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -27,9 +28,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
+    private final Key secretToken;
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, Key secretToken) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.secretToken = secretToken;
     }
 
     @Override
@@ -55,7 +59,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .withClaim("id", user.getID())
-                .sign(HMAC512(SECRET.getBytes()));
+                .sign(HMAC512(secretToken.getEncoded()));
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 }

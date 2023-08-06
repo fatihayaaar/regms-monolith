@@ -1,6 +1,6 @@
 package com.fayardev.regms.dtos;
 
-public class PasswordDto {
+public class PasswordDto extends BaseDto {
 
     private String oldPassword;
     private String token;

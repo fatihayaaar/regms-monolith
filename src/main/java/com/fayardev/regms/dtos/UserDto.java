@@ -2,7 +2,7 @@ package com.fayardev.regms.dtos;
 
 import java.util.Date;
 
-public class UserDto {
+public class UserDto extends BaseDto {
 
     private String username;
     private String emailAddress;
