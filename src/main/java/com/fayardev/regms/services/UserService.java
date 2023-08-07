@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -40,7 +39,6 @@ public class UserService extends BaseService<User> implements IUserService<User>
         if (!emailControl(entity) || !usernameControl(entity)) {
             return false;
         }
-        entity.setCreateDate(new Date());
         entity.setActive(true);
         entity.setConfirm(false);
         entity.setVerified(false);

@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -65,14 +67,14 @@ public final class UserController extends BaseController implements IUserControl
     }
 
     @Override
-    @PostMapping("/update")
+    @PutMapping("/update")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Boolean> update(Authentication authentication, @RequestBody User user) throws Exception {
+    public ResponseEntity<Boolean> update(Authentication authentication, @RequestBody @Valid User user) throws Exception {
         return ResponseEntity.ok().build();
     }
 
     @Override
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Boolean> delete(Authentication authentication, @RequestBody Long id) throws Exception {
         return ResponseEntity.ok(userService.delete(id));

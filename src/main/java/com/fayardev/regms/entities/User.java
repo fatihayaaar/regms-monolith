@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -43,9 +45,10 @@ public class User extends BaseEntity {
     @Column(nullable = false, length = SEX_MAX_LENGTH)
     private String sex;
 
-    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date birthDate;
+    private Timestamp birthDate;
 
     @Column(nullable = false)
     private boolean confirm;
@@ -56,15 +59,21 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isActive;
 
-    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date createDate;
+    private Timestamp createDate;
 
     @Transient
     private Integer age;
 
     public User() {
         super();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createDate = new Timestamp((new Date()).getTime());
     }
 
     @Override
@@ -124,11 +133,11 @@ public class User extends BaseEntity {
         this.sex = sex;
     }
 
-    public Date getBirthDate() {
+    public Timestamp getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Timestamp birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -156,11 +165,11 @@ public class User extends BaseEntity {
         isActive = active;
     }
 
-    public Date getCreateDate() {
+    public Timestamp getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
 

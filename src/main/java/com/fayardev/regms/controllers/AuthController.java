@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "${allowed.origins}", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public final class AuthController extends BaseController implements IAuthController {
 
     private final UserService userService;
@@ -31,7 +31,7 @@ public final class AuthController extends BaseController implements IAuthControl
 
     @Override
     @PostMapping("/sign-up")
-    public ResponseEntity<Object> signUp(@Valid @RequestBody AuthUserDto userDto) throws Exception {
+    public ResponseEntity<Object> signUp(@RequestBody @Valid AuthUserDto userDto) throws Exception {
         if (!UserValidate.passwordLengthValidate(userDto.getPassword())) {
             if (!UserValidate.passwordValidate(userDto.getPassword())) {
                 return ResponseEntity.ok(false);

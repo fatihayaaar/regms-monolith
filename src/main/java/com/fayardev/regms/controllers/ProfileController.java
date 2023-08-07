@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -39,7 +40,7 @@ public final class ProfileController extends BaseController implements IProfileC
     @Override
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Boolean> addProfile(Authentication authentication, @RequestBody ProfileDto profileDto) throws Exception {
+    public ResponseEntity<Boolean> addProfile(Authentication authentication, @RequestBody @Valid ProfileDto profileDto) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -61,7 +62,7 @@ public final class ProfileController extends BaseController implements IProfileC
     }
 
     @Override
-    @PostMapping("/change-about-me")
+    @PatchMapping("/change-about-me")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> changeAboutMe(Authentication authentication, @RequestBody String aboutMe) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
@@ -75,7 +76,7 @@ public final class ProfileController extends BaseController implements IProfileC
     }
 
     @Override
-    @PostMapping("/update-avatar")
+    @PatchMapping("/update-avatar")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> updateAvatar(Authentication authentication, @RequestBody String base64) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
@@ -89,7 +90,7 @@ public final class ProfileController extends BaseController implements IProfileC
     }
 
     @Override
-    @PostMapping("/delete-avatar")
+    @DeleteMapping("/delete-avatar")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Boolean> deleteAvatar(Authentication authentication) throws Exception {
         var user = userService.getEntityByUsername(authentication.getName());
