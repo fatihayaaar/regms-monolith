@@ -1,6 +1,6 @@
 package com.fayardev.regms.dtos;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class UserDto extends BaseDto {
 
@@ -8,17 +8,17 @@ public class UserDto extends BaseDto {
     private String emailAddress;
     private String phoneNo;
     private String sex;
-    private Date birthDate;
-    private Date createDate;
+    private Timestamp birthDate;
+    private Timestamp createDate;
     private boolean isActive;
     private boolean verified;
     private boolean confirm;
 
-    public Date getCreateDate() {
+    public Timestamp getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
 
@@ -78,11 +78,11 @@ public class UserDto extends BaseDto {
         this.sex = sex;
     }
 
-    public Date getBirthDate() {
+    public Timestamp getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Timestamp birthDate) {
         this.birthDate = birthDate;
     }
 }

@@ -2,12 +2,12 @@ package com.fayardev.regms.dtos;
 
 import com.fayardev.regms.entities.User;
 import com.fayardev.regms.validates.UserValidate;
-import lombok.Data;
+import lombok.Builder;
 
 import javax.validation.constraints.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
-@Data
 public class AuthUserDto extends BaseDto {
 
     @NotEmpty
@@ -36,7 +36,7 @@ public class AuthUserDto extends BaseDto {
 
     @NotEmpty
     @NotBlank
-    private Date birthDate;
+    private Timestamp birthDate;
 
     private Date createDate;
     private boolean isActive;
@@ -115,11 +115,11 @@ public class AuthUserDto extends BaseDto {
         this.sex = sex;
     }
 
-    public Date getBirthDate() {
+    public Timestamp getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Timestamp birthDate) {
         this.birthDate = birthDate;
     }
 }

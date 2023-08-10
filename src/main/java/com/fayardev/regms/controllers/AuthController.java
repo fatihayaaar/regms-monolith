@@ -1,5 +1,6 @@
 package com.fayardev.regms.controllers;
 
+import com.fayardev.regms.auth.RefreshToken;
 import com.fayardev.regms.controllers.abstracts.IAuthController;
 import com.fayardev.regms.dtos.AuthUserDto;
 import com.fayardev.regms.entities.User;
@@ -31,7 +32,7 @@ public final class AuthController extends BaseController implements IAuthControl
 
     @Override
     @PostMapping("/sign-up")
-    public ResponseEntity<Object> signUp(@RequestBody @Valid AuthUserDto userDto) throws Exception {
+    public ResponseEntity<?> signUp(@RequestBody @Valid AuthUserDto userDto) throws Exception {
         if (!UserValidate.passwordLengthValidate(userDto.getPassword())) {
             if (!UserValidate.passwordValidate(userDto.getPassword())) {
                 return ResponseEntity.ok(false);
@@ -39,5 +40,11 @@ public final class AuthController extends BaseController implements IAuthControl
         }
         userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         return ResponseEntity.ok(userService.saveEntity(modelMapper.map(userDto, User.class)));
+    }
+
+    @Override
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshToken refreshToken) {
+        return ResponseEntity.ok().build();
     }
 }

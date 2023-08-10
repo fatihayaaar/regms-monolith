@@ -14,7 +14,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public final class UserController extends BaseController implements IUserController {
+public class UserController extends BaseController implements IUserController {
 
     private final UserService userService;
 

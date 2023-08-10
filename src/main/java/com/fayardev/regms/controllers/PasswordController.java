@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/password")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public final class PasswordController extends BaseController implements IPasswordController {
+public class PasswordController extends BaseController implements IPasswordController {
 
     private final PasswordResetService service;
     private final UserService userService;

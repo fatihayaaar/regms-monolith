@@ -3,6 +3,7 @@ package com.fayardev.regms.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fayardev.regms.auth.Role;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -11,6 +12,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.EnumSet;
+import java.util.Set;
 
 @Entity
 @JsonIgnoreProperties(allowSetters = true, value = {"password"})
@@ -63,6 +66,11 @@ public class User extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Timestamp createDate;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = EnumSet.of(Role.ROLE_USER);
 
     @Transient
     private Integer age;
@@ -181,5 +189,13 @@ public class User extends BaseEntity {
                 "'emailAddress' : '"+ this.emailAddress +"', " +
                 "'sex' : '"+ this.sex +"', " +
                 "}";
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
