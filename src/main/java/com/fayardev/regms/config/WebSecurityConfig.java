@@ -3,6 +3,7 @@ package com.fayardev.regms.config;
 import com.fayardev.regms.auth.AuthConstants;
 import com.fayardev.regms.auth.JWTAuthenticationFilter;
 import com.fayardev.regms.auth.JWTAuthorizationFilter;
+import com.fayardev.regms.auth.Role;
 import com.fayardev.regms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,7 @@ import java.security.KeyStore;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+//@EnableMethodSecurity
 public class WebSecurityConfig {
 
     private final UserService userService;

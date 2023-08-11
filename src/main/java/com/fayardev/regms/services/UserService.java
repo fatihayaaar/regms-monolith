@@ -1,5 +1,6 @@
 package com.fayardev.regms.services;
 
+import com.fayardev.regms.auth.Role;
 import com.fayardev.regms.entities.BaseEntity;
 import com.fayardev.regms.entities.BlankEntity;
 import com.fayardev.regms.entities.User;
@@ -42,6 +43,7 @@ public class UserService extends BaseService<User> implements IUserService<User>
         entity.setActive(true);
         entity.setConfirm(false);
         entity.setVerified(false);
+        entity.setRole(Role.ROLE_USER);
         repository.save(entity);
         return true;
     }

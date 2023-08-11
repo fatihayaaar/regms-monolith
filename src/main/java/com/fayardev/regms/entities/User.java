@@ -12,8 +12,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
 
 @Entity
 @JsonIgnoreProperties(allowSetters = true, value = {"password"})
@@ -67,10 +65,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Timestamp createDate;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles = EnumSet.of(Role.ROLE_USER);
+    private Role role;
 
     @Transient
     private Integer age;
@@ -185,17 +181,17 @@ public class User extends BaseEntity {
     public String toString() {
         return "User {" +
                 "'id': " + this.ID + ", " +
-                "'username' : '"+ this.username +"', " +
-                "'emailAddress' : '"+ this.emailAddress +"', " +
-                "'sex' : '"+ this.sex +"', " +
+                "'username' : '" + this.username + "', " +
+                "'emailAddress' : '" + this.emailAddress + "', " +
+                "'sex' : '" + this.sex + "', " +
                 "}";
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
