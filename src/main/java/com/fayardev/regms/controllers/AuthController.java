@@ -1,8 +1,9 @@
 package com.fayardev.regms.controllers;
 
-import com.fayardev.regms.auth.RefreshToken;
+import com.fayardev.regms.auth.util.JWTUtil;
 import com.fayardev.regms.controllers.abstracts.IAuthController;
 import com.fayardev.regms.dtos.AuthUserDto;
+import com.fayardev.regms.dtos.RefreshTokenDto;
 import com.fayardev.regms.entities.User;
 import com.fayardev.regms.services.UserService;
 import com.fayardev.regms.validates.UserValidate;
@@ -21,12 +22,14 @@ public final class AuthController extends BaseController implements IAuthControl
 
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JWTUtil JWTUtil;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public AuthController(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
+    public AuthController(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, JWTUtil JWTUtil, ModelMapper modelMapper) {
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.JWTUtil = JWTUtil;
         this.modelMapper = modelMapper;
     }
 
@@ -44,7 +47,7 @@ public final class AuthController extends BaseController implements IAuthControl
 
     @Override
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshToken refreshToken) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshTokenDto refreshToken) {
+      return null;
     }
 }

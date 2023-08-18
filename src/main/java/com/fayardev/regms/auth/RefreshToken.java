@@ -1,14 +1,17 @@
 package com.fayardev.regms.auth;
 
-import lombok.Builder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+public class RefreshToken extends UsernamePasswordAuthenticationToken {
 
-@Builder
-public class RefreshToken {
-
-    @NotNull
-    @NotBlank
     private String refreshToken;
+
+    public RefreshToken(String refreshToken) {
+        super(null, null);
+        this.refreshToken = refreshToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
 }

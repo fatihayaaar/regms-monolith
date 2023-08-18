@@ -1,7 +1,7 @@
 package com.fayardev.regms.auth;
 
-import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fayardev.regms.auth.util.JWTUtil;
 import com.fayardev.regms.dtos.AuthUserDto;
 import com.fayardev.regms.entities.User;
 import com.fayardev.regms.services.UserService;
@@ -13,27 +13,25 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
-import java.util.Date;
 
-import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-import static com.fayardev.regms.auth.AuthConstants.*;
+import static com.fayardev.regms.auth.AuthConstants.HEADER_STRING;
+import static com.fayardev.regms.auth.AuthConstants.TOKEN_PREFIX;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JWTUtil JWTUtil;
     private final UserService userService;
 
-    private final Key secretToken;
-
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, Key secretToken) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTUtil JWTUtil, UserService userService) {
         this.authenticationManager = authenticationManager;
+        this.JWTUtil = JWTUtil;
         this.userService = userService;
-        this.secretToken = secretToken;
     }
 
     @Override
@@ -54,12 +52,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication auth) throws IOException, ServletException {
-        User user = (User) userService.getEntityByUsername(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername());
-        String token = JWT.create()
-                .withSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .withClaim("id", user.getID())
-                .sign(HMAC512(secretToken.getEncoded()));
+        UserDetails userDetails = userService.loadUserByUsername(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername());
+        String token = JWTUtil.generateToken(userDetails);
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 }

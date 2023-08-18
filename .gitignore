@@ -18,7 +18,7 @@ target/
 build/
 
 # Gradle specific files
-#gradle/
+.gradle/
 
 # Spring Boot's DevTools configuration
 /.idea/
@@ -39,4 +39,4 @@ logs/
 /application-prod.properties
 
 # Spring Boot's generated keystore
-#*.jks
+*.jks

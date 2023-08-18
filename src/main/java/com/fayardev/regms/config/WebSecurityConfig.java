@@ -3,17 +3,16 @@ package com.fayardev.regms.config;
 import com.fayardev.regms.auth.AuthConstants;
 import com.fayardev.regms.auth.JWTAuthenticationFilter;
 import com.fayardev.regms.auth.JWTAuthorizationFilter;
-import com.fayardev.regms.auth.Role;
+import com.fayardev.regms.auth.JWTRefreshAuthenticationFilter;
+import com.fayardev.regms.auth.util.JWTUtil;
 import com.fayardev.regms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,9 +23,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.security.Key;
-import java.security.KeyStore;
-
 @Configuration
 @EnableWebSecurity
 //@EnableMethodSecurity
@@ -34,23 +30,13 @@ public class WebSecurityConfig {
 
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Value("${server.ssl.key-store}")
-    private String keyStoreClassPath;
-
-    @Value("secret-key")
-    private String keyName;
-
-    @Value("${server.ssl.key-store-password}")
-    private String keyStorePassword;
-
-    @Value("${server.ssl.key-password}")
-    private String keyPassword;
+    private final JWTUtil JWTUtil;
 
     @Autowired
-    public WebSecurityConfig(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public WebSecurityConfig(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, JWTUtil JWTUtil) {
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.JWTUtil = JWTUtil;
     }
 
     @Bean
@@ -69,14 +55,16 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, AuthConstants.LOGIN_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, AuthConstants.SIGN_UP_URL).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.POST, AuthConstants.FORGOT_PASSWORD_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, AuthConstants.FORGOT_PASSWORD_CHANGED_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, AuthConstants.FORGOT_PASS_CHANGE_URL).permitAll()
                         .requestMatchers(HttpMethod.GET, AuthConstants.VALID_URL).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilter(new JWTAuthenticationFilter(authenticationManager, userService, secretKey()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager, secretKey()))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager, JWTUtil, userService))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager, JWTUtil))
+                .addFilter(new JWTRefreshAuthenticationFilter(authenticationManager, JWTUtil))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return httpSecurity.build();
@@ -92,13 +80,5 @@ public class WebSecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
-    }
-
-    @Bean
-    public Key secretKey() throws Exception {
-        KeyStore keyStore = KeyStore.getInstance("JKS");
-        keyStore.load(getClass().getClassLoader().getResourceAsStream("keystore.jks"), keyStorePassword.toCharArray());
-
-        return keyStore.getKey(keyName, keyPassword.toCharArray());
     }
 }

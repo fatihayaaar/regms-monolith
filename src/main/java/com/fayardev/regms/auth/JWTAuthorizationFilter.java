@@ -2,6 +2,7 @@ package com.fayardev.regms.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fayardev.regms.auth.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,18 +13,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
 
-import static com.fayardev.regms.auth.AuthConstants.*;
+import static com.fayardev.regms.auth.AuthConstants.HEADER_STRING;
+import static com.fayardev.regms.auth.AuthConstants.TOKEN_PREFIX;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final Key secretToken;
+    private final JWTUtil JWTUtil;
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager, Key secretToken) {
+    public JWTAuthorizationFilter(AuthenticationManager authManager, JWTUtil JWTUtil) {
         super(authManager);
-        this.secretToken = secretToken;
+        this.JWTUtil = JWTUtil;
     }
 
     @Override
@@ -46,10 +47,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
-            String user = JWT.require(Algorithm.HMAC512(secretToken.getEncoded()))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
+            String user;
+            try {
+                user = JWT.require(Algorithm.HMAC512(JWTUtil.secretKey().getEncoded()))
+                        .build()
+                        .verify(token.replace(TOKEN_PREFIX, ""))
+                        .getSubject();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             if (user != null) {
                 return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
             }
