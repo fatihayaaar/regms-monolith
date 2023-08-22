@@ -44,40 +44,14 @@ public class JWTUtil implements Serializable {
     @Value("${jwt.refreshToken.expirationMs}")
     private Long refreshTokenExpirationMs;
 
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
-    }
-
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
-
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims getAllClaimsFromToken(String token) {
-        try {
-            return Jwts.parser().setSigningKey(secretKey().getEncoded()).parseClaimsJws(token).getBody();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
-
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return doGenerateToken(claims, userDetails.getUsername(), accessTokenExpirationMs);
     }
 
-    public String generateRefreshToken(UserDetails userDetails) {
+    public String generateTokenByUsername(String username) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername(), refreshTokenExpirationMs);
+        return doGenerateToken(claims, username, accessTokenExpirationMs);
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject, Long expirationMs) {
@@ -89,16 +63,6 @@ public class JWTUtil implements Serializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    public Boolean validateRefreshToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public Key secretKey() throws Exception {

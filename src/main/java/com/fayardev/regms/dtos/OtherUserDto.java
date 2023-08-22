@@ -1,25 +1,18 @@
 package com.fayardev.regms.dtos;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class OtherUserDto extends BaseDto {
 
     private String username;
     private Date createDate;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
 }

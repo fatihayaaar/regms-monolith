@@ -1,5 +1,14 @@
 package com.fayardev.regms.dtos;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class PasswordDto extends BaseDto {
 
     private String oldPassword;
@@ -7,44 +16,4 @@ public class PasswordDto extends BaseDto {
     private String validateCode;
     private String emailAddress;
     private String newPassword;
-
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getValidateCode() {
-        return validateCode;
-    }
-
-    public void setValidateCode(String validateCode) {
-        this.validateCode = validateCode;
-    }
 }

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fayardev.regms.auth.Role;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
@@ -14,6 +16,8 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
 @JsonIgnoreProperties(allowSetters = true, value = {"password"})
 public class User extends BaseEntity {
 
@@ -85,24 +89,9 @@ public class User extends BaseEntity {
         return ID;
     }
 
-    public void setID(Long ID) {
-        this.ID = ID;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    @Override
+    public String toString() {
+        return null;
     }
 
     public Integer getAge() {
@@ -111,87 +100,5 @@ public class User extends BaseEntity {
             return Period.between(birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), currentDate).getYears();
         }
         return null;
-    }
-
-    public String getPhoneNo() {
-        return phoneNo;
-    }
-
-    public void setPhoneNo(String phoneNo) {
-        this.phoneNo = phoneNo;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String hashPassword) {
-        this.password = hashPassword;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public Timestamp getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Timestamp birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public boolean isConfirm() {
-        return confirm;
-    }
-
-    public void setConfirm(boolean confirm) {
-        this.confirm = confirm;
-    }
-
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public Timestamp getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
-    }
-
-    @Override
-    public String toString() {
-        return "User {" +
-                "'id': " + this.ID + ", " +
-                "'username' : '" + this.username + "', " +
-                "'emailAddress' : '" + this.emailAddress + "', " +
-                "'sex' : '" + this.sex + "', " +
-                "}";
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }

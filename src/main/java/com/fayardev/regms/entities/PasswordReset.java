@@ -1,9 +1,14 @@
 package com.fayardev.regms.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
 @NamedQueries(value = {
         @NamedQuery(name = "PasswordReset.findByEmail", query = "SELECT pr FROM PasswordReset pr WHERE pr.emailAddress=:emailAddress and pr.isActive=true order by pr.expiryDate desc "),
 })
@@ -33,83 +38,11 @@ public class PasswordReset extends BaseEntity {
     }
 
     public PasswordReset() {
-
-    }
-
-    public String getTokenPassword() {
-        return tokenPassword;
-    }
-
-    public void setTokenPassword(String tokenPassword) {
-        this.tokenPassword = tokenPassword;
-    }
-
-    public boolean isActiveTokenPassword() {
-        return isActiveTokenPassword;
-    }
-
-    public void setActiveTokenPassword(boolean activeTokenPassword) {
-        isActiveTokenPassword = activeTokenPassword;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public int getNumberOfInteractions() {
-        return numberOfInteractions;
-    }
-
-    public void setNumberOfInteractions(int numberOfInteractions) {
-        this.numberOfInteractions = numberOfInteractions;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        super();
     }
 
     @Override
     public String toString() {
         return null;
-    }
-
-    public String getValidateCode() {
-        return validateCode;
-    }
-
-    public void setValidateCode(String token) {
-        this.validateCode = token;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
     }
 }

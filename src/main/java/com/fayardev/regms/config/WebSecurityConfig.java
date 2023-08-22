@@ -3,8 +3,8 @@ package com.fayardev.regms.config;
 import com.fayardev.regms.auth.AuthConstants;
 import com.fayardev.regms.auth.JWTAuthenticationFilter;
 import com.fayardev.regms.auth.JWTAuthorizationFilter;
-import com.fayardev.regms.auth.JWTRefreshAuthenticationFilter;
 import com.fayardev.regms.auth.util.JWTUtil;
+import com.fayardev.regms.services.RefreshTokenService;
 import com.fayardev.regms.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,14 +29,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
 
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JWTUtil JWTUtil;
+    private final JWTUtil jwtUtil;
 
     @Autowired
-    public WebSecurityConfig(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, JWTUtil JWTUtil) {
+    public WebSecurityConfig(UserService userService, RefreshTokenService refreshTokenService, BCryptPasswordEncoder bCryptPasswordEncoder, JWTUtil jwtUtil) {
         this.userService = userService;
+        this.refreshTokenService = refreshTokenService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.JWTUtil = JWTUtil;
+        this.jwtUtil = jwtUtil;
     }
 
     @Bean
@@ -55,16 +57,15 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, AuthConstants.LOGIN_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, AuthConstants.SIGN_UP_URL).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST, AuthConstants.REFRESH_TOKEN_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, AuthConstants.FORGOT_PASSWORD_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, AuthConstants.FORGOT_PASSWORD_CHANGED_URL).permitAll()
                         .requestMatchers(HttpMethod.POST, AuthConstants.FORGOT_PASS_CHANGE_URL).permitAll()
                         .requestMatchers(HttpMethod.GET, AuthConstants.VALID_URL).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilter(new JWTAuthenticationFilter(authenticationManager, JWTUtil, userService))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager, JWTUtil))
-                .addFilter(new JWTRefreshAuthenticationFilter(authenticationManager, JWTUtil))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager, jwtUtil, userService, refreshTokenService))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager, jwtUtil))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return httpSecurity.build();

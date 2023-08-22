@@ -3,7 +3,7 @@ package com.fayardev.regms.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fayardev.regms.auth.util.JWTUtil;
 import com.fayardev.regms.dtos.AuthUserDto;
-import com.fayardev.regms.entities.User;
+import com.fayardev.regms.services.RefreshTokenService;
 import com.fayardev.regms.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,19 +19,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.fayardev.regms.auth.AuthConstants.HEADER_STRING;
-import static com.fayardev.regms.auth.AuthConstants.TOKEN_PREFIX;
+import static com.fayardev.regms.auth.AuthConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final JWTUtil JWTUtil;
+    private final JWTUtil jwtUtil;
     private final UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTUtil JWTUtil, UserService userService) {
+    private final RefreshTokenService refreshTokenService;
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, UserService userService, RefreshTokenService refreshTokenService) {
         this.authenticationManager = authenticationManager;
-        this.JWTUtil = JWTUtil;
+        this.jwtUtil = jwtUtil;
         this.userService = userService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -53,7 +55,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication auth) throws IOException, ServletException {
         UserDetails userDetails = userService.loadUserByUsername(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername());
-        String token = JWTUtil.generateToken(userDetails);
+
+        String token = jwtUtil.generateToken(userDetails);
+        String refreshToken = refreshTokenService.createRefreshToken(userDetails.getUsername()).getToken();
+
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+        res.addHeader(HEADER_STRING_REFRESH_TOKEN, refreshToken);
     }
 }

@@ -20,11 +20,11 @@ import static com.fayardev.regms.auth.AuthConstants.TOKEN_PREFIX;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final JWTUtil JWTUtil;
+    private final JWTUtil jwtUtil;
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager, JWTUtil JWTUtil) {
+    public JWTAuthorizationFilter(AuthenticationManager authManager, JWTUtil jwtUtil) {
         super(authManager);
-        this.JWTUtil = JWTUtil;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         if (token != null) {
             String user;
             try {
-                user = JWT.require(Algorithm.HMAC512(JWTUtil.secretKey().getEncoded()))
+                user = JWT.require(Algorithm.HMAC512(jwtUtil.secretKey().getEncoded()))
                         .build()
                         .verify(token.replace(TOKEN_PREFIX, ""))
                         .getSubject();
